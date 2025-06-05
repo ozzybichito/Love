@@ -17,13 +17,20 @@
             theme: {
                 extend: {
                     colors: {
+                        // Nueva Paleta de Colores - Romántica y Sofisticada
+                        'amor-vino-tinto': '#8B0000', // Deep Burgundy/Wine Red
+                        'amor-rosa-empolvado': '#D8BFD8', // Thistle/Dusty Rose
+                        'amor-dorado-champan': '#F7E7CE', // Champagne Gold / Pale Gold
+                        'amor-crema-calido': '#FFF8E7',   // Warm Cream / Ivory
+                        'amor-texto-oscuro': '#362222',   // Dark Charcoal Brown
+                        'amor-texto-grisaceo': '#6A5D5D', // Warm Medium Gray
+                        // Manteniendo algunos de los anteriores si se usan específicamente y encajan
                         'amor-rosa-suave': '#FAE8E0', 
                         'amor-rosa-medio': '#FAD2E1', 
-                        'amor-rosa-fuerte': '#E6A8D7', 
                         'amor-malva': '#C67B9A',     
-                        'amor-texto-principal': '#5C3C48', 
-                        'amor-texto-secundario': '#7D5A68', 
-                        'amor-dorado-suave': '#FBF3E0', 
+                        'amor-texto-principal': '#5C3C48', // Reemplazado por amor-texto-oscuro
+                        'amor-texto-secundario': '#7D5A68', // Reemplazado por amor-texto-grisaceo
+                        'amor-dorado-suave': '#FBF3E0', // Reemplazado por amor-crema-calido
                     },
                     fontFamily: {
                         'great-vibes': ['Great Vibes', 'cursive'],
@@ -35,7 +42,7 @@
         }
     </script>
 </head>
-<body class="font-montserrat text-amor-texto-principal bg-amor-dorado-suave">
+<body class="font-montserrat text-amor-texto-oscuro bg-amor-crema-calido">
 
     <!-- ========== Header ========== -->
     <header class="bg-white/90 backdrop-blur-lg shadow-md sticky top-0 z-[100] transition-all duration-300">
@@ -45,42 +52,40 @@
             </a>
             <nav class="hidden md:flex items-center space-x-5 lg:space-x-7">
                 <a href="index.html" class="nav-link active">Inicio</a>
-                <!-- Otros enlaces eliminados para una sola página -->
             </nav>
-            <button id="mobile-menu-button" class="md:hidden text-amor-malva focus:outline-none p-2">
+            <button id="mobile-menu-button" class="md:hidden text-amor-vino-tinto focus:outline-none p-2">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute top-full left-0 right-0 z-50">
             <a href="index.html" class="mobile-nav-link active">Inicio</a>
-            <!-- Otros enlaces eliminados para una sola página -->
         </div>
     </header>
 
     <!-- ========== Hero Section - Portada Principal ========== -->
     <section class="hero-section relative min-h-screen flex items-center justify-center text-center text-white overflow-hidden">
         <div class="absolute inset-0 bg-cover bg-center z-0 hero-bg-image" style="background-image: url('static/img/generales/portada-principal-jason-pamela.jpg');">
-            <div class="absolute inset-0 bg-black/50"></div> 
+            <div class="absolute inset-0 bg-black/60"></div> 
         </div>
         
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
             <h1 class="font-great-vibes text-6xl sm:text-7xl md:text-8xl lg:text-9xl mb-3 text-shadow-romantic animate-fade-in-down">
                 Pamela Massiel
             </h1>
-            <p class="font-playfair text-2xl sm:text-3xl md:text-4xl italic mb-6 text-amor-rosa-suave/90 text-shadow-light animate-fade-in-up delay-300">
+            <p class="font-playfair text-2xl sm:text-3xl md:text-4xl italic mb-6 text-amor-dorado-champan/90 text-shadow-light animate-fade-in-up delay-300">
                 Mi Amor, Mi Vida, Mi Todo
             </p>
-            <p class="font-montserrat text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed text-gray-200/90 animate-fade-in-up delay-600">
+            <p class="font-montserrat text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed text-gray-200/95 animate-fade-in-up delay-600">
                 Desde el instante en que nuestros caminos se cruzaron, supe que mi vida había encontrado su más bella melodía. Este rincón es para ti, un pequeño reflejo del universo de amor que siento.
                 <br><span class="font-playfair italic mt-2 block">- Con amor infinito, Jason Dafnis.</span>
             </p>
             <div class="special-date-container animate-fade-in-up delay-900 flex flex-col items-center">
                 <img src="static/img/iconos/corazon-calendario.png" alt="Icono romántico para el día siete" class="h-16 w-16 sm:h-20 sm:w-20 mb-3 opacity-90">
-                <p class="font-playfair text-xl sm:text-2xl text-amor-rosa-medio">Cada Siete: <span class="font-semibold text-white">Una Celebración de Nosotros</span></p>
+                <p class="font-playfair text-xl sm:text-2xl text-amor-rosa-empolvado">Cada Siete: <span class="font-semibold text-white">Una Celebración de Nosotros</span></p>
             </div>
-             <a href="#inspiracion-ia" 
+             <a href="#bienvenida" 
                 class="button-romantic mt-12 animate-fade-in-up delay-1200">
-                Inspiración para un Mensaje
+                Descubre Nuestro Rincón
             </a>
         </div>
         <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
@@ -88,21 +93,18 @@
         </div>
     </section>
 
-    <!-- ========== Sección de Bienvenida / Pequeña Introducción (Se puede expandir o usar para más contenido) ========== -->
-    <section id="bienvenida" class="py-20 sm:py-28 bg-amor-dorado-suave/50">
+    <!-- ========== Sección de Bienvenida / Pequeña Introducción ========== -->
+    <section id="bienvenida" class="py-20 sm:py-28 bg-amor-crema-calido/60">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-malva mb-6 section-title-romantic">Un Viaje Tejido con Amor</h2>
-            <p class="text-lg text-amor-texto-secundario max-w-3xl mx-auto mb-16 leading-relaxed">
+            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-vino-tinto mb-6 section-title-romantic">Un Viaje Tejido con Amor</h2>
+            <p class="text-lg text-amor-texto-grisaceo max-w-3xl mx-auto mb-16 leading-relaxed">
                 Este es nuestro pequeño universo digital, un espacio donde atesoramos cada sonrisa, cada sueño compartido y la promesa de un amor que crece con cada amanecer. Un tributo a la hermosa historia que escribimos juntos, Jason y Pamela.
             </p>
-            <!-- Aquí podrían ir más elementos, como las tarjetas que tenías, o una breve intro a "Nuestra Historia" si la incluyes en esta página -->
             <div class="grid md:grid-cols-3 gap-10 lg:gap-12">
-                 <!-- Ejemplo de tarjeta simplificada - podrías tener 1 o 3 de estas -->
                 <div class="card-romantic">
                     <img src="static/img/iconos/libro-abierto.png" alt="Icono de libro abierto representando su historia" class="card-icon-romantic">
                     <h3 class="card-title-romantic">Nuestra Historia</h3>
                     <p class="card-text-romantic">Un recuento de cómo nuestro amor floreció.</p>
-                    <!-- Este botón podría scrollear a una sección de historia más abajo en ESTA página -->
                     <a href="#nuestra-historia-seccion" class="button-card-romantic">Descubrir</a> 
                 </div>
                  <div class="card-romantic">
@@ -121,75 +123,89 @@
         </div>
     </section>
     
-    <!-- ========== Aquí podrían ir más secciones de contenido si las fusionas en index.html ========== -->
-    <!-- Ejemplo: Sección "Nuestra Historia" (si la integras aquí) -->
+    <!-- ========== Sección "Nuestra Historia" (Integrada) ========== -->
     <section id="nuestra-historia-seccion" class="py-20 sm:py-28 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-malva mb-12 section-title-romantic">Los Capítulos de Nuestro Amor</h2>
-            <!-- Contenido de la historia (simplificado o completo) -->
+            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-vino-tinto mb-12 section-title-romantic">Los Capítulos de Nuestro Amor</h2>
             <div class="historia-capitulo mb-12 md:mb-16 flex flex-col md:flex-row items-center text-left">
                 <div class="md:w-1/2 md:pr-8 lg:pr-12 mb-6 md:mb-0">
                     <img src="static/img/historia/como-nos-conocimos.jpg" alt="El día que el destino nos unió, Jason y Pamela" class="rounded-xl shadow-lg w-full">
                 </div>
                 <div class="md:w-1/2">
-                    <h3 class="font-playfair text-3xl text-amor-texto-principal mb-3">El Destino Nos Unió</h3>
-                    <p class="text-amor-texto-secundario leading-relaxed">
-                        Pamela, recuerdo como si fuera ayer el brillo en tus ojos... (Aquí tu historia)
+                    <h3 class="font-playfair text-3xl text-amor-texto-oscuro mb-3">El Destino Nos Unió</h3>
+                     <span class="font-montserrat text-sm text-amor-vino-tinto block mb-3">Fecha: [Escribe la fecha aquí]</span>
+                    <p class="text-amor-texto-grisaceo leading-relaxed">
+                        Pamela, recuerdo como si fuera ayer el brillo en tus ojos... (Aquí puedes contar cómo se conocieron, las primeras impresiones, y esa chispa que lo inició todo. Sé detallado y personal).
                     </p>
                 </div>
             </div>
-            <!-- Más capítulos pueden seguir este patrón -->
+             <!-- Puedes añadir más capítulos aquí siguiendo el mismo patrón -->
+            <div class="historia-capitulo mb-12 md:mb-16 flex flex-col md:flex-row-reverse items-center text-left">
+                <div class="md:w-1/2 md:pl-8 lg:pl-12 mb-6 md:mb-0">
+                    <img src="static/img/historia/primeras-citas-jason-pamela.jpg" alt="Nuestras primeras citas, construyendo recuerdos" class="rounded-xl shadow-lg w-full">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="font-playfair text-3xl text-amor-texto-oscuro mb-3">Primeras Aventuras Juntos</h3>
+                    <span class="font-montserrat text-sm text-amor-vino-tinto block mb-3">Época: [Describe la época o fechas]</span>
+                    <p class="text-amor-texto-grisaceo leading-relaxed">
+                        Esas primeras salidas, las risas nerviosas, descubriendo nuestros gustos... (Comparte alguna anécdota especial de sus primeras citas o aventuras).
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ========== Sección Galería (Ejemplo simple, puedes expandirla) ========== -->
+    <section id="galeria-seccion" class="py-20 sm:py-28 bg-amor-crema-calido/60">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-vino-tinto mb-12 section-title-romantic">Nuestros Tesoros Visuales</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                <!-- Reemplaza con tus imágenes. Idealmente con un lightbox para verlas en grande -->
+                <img src="static/img/galeria/foto1-jason-pamela.jpg" alt="Recuerdo especial de Jason y Pamela 1" class="gallery-image">
+                <img src="static/img/galeria/foto2-viaje-romantico.jpg" alt="Recuerdo especial de Jason y Pamela 2" class="gallery-image">
+                <img src="static/img/galeria/foto3-aniversario.jpg" alt="Recuerdo especial de Jason y Pamela 3" class="gallery-image">
+                <img src="static/img/galeria/foto4-sonrisas.jpg" alt="Recuerdo especial de Jason y Pamela 4" class="gallery-image">
+                <!-- Añade más imágenes según necesites -->
+            </div>
         </div>
     </section>
 
-
-    <!-- ========== Sección de Inspiración Romántica con IA ========== -->
-    <section id="inspiracion-ia" class="py-20 sm:py-28 bg-amor-dorado-suave/50">
+    <!-- ========== Sección Rincón del Siete (Integrada) ========== -->
+    <section id="rincon-siete-seccion" class="py-20 sm:py-28 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-malva mb-6 section-title-romantic">
-                ✨ Rincón de Inspiración Romántica ✨
-            </h2>
-            <p class="text-lg text-amor-texto-secundario max-w-2xl mx-auto mb-10 leading-relaxed">
-                ¿Buscas las palabras perfectas? Deja que la magia de la inspiración te ayude. Escribe algunas ideas o sentimientos clave y crearemos un borrador de mensaje o poema para dedicar.
+            <img src="static/img/iconos/calendario-corazon-grande.png" alt="Gran icono del Siete" class="h-24 w-24 mx-auto mb-6">
+            <h2 class="font-playfair text-4xl sm:text-5xl text-amor-vino-tinto mb-6 section-title-romantic">Nuestro Mágico Siete</h2>
+            <p class="text-lg text-amor-texto-grisaceo max-w-2xl mx-auto mb-10 leading-relaxed">
+                Cada siete del mes, nuestro amor brilla con una luz especial. Es un recordatorio constante de la fortuna de tenernos, un día para celebrar en grande o en la intimidad de una mirada cómplice, la maravillosa aventura que es amarnos.
             </p>
-            <div class="max-w-xl mx-auto bg-amor-rosa-suave p-8 rounded-xl shadow-xl">
-                <textarea id="ideaPrincipal" rows="4" class="w-full p-4 border border-amor-rosa-medio rounded-lg focus:ring-2 focus:ring-amor-malva focus:border-transparent transition-shadow duration-300 shadow-sm mb-6" placeholder="Ej: 'Nuestro aniversario', 'amor eterno y gratitud', 'para mi Pamela querida'..."></textarea>
-                <button id="generarMensajeBtn" class="button-romantic">
-                    Generar Mensaje de Amor
-                </button>
-                <div id="spinner" class="hidden mt-6">
-                    <div class="loader-romantic"></div>
-                    <p class="text-amor-texto-secundario mt-2">Creando algo especial...</p>
-                </div>
-                <div id="mensajeGenerado" class="mt-8 p-6 bg-amor-dorado-suave/70 rounded-lg text-left hidden shadow-inner">
-                    <h4 class="font-playfair text-xl text-amor-texto-principal mb-3">Tu Mensaje Inspirado:</h4>
-                    <p class="text-amor-texto-secundario whitespace-pre-wrap"></p>
-                </div>
-                <p id="errorMensaje" class="text-red-500 mt-4 hidden"></p>
+            <div class="bg-amor-rosa-empolvado/30 p-8 rounded-xl shadow-lg max-w-lg mx-auto">
+                <p class="font-playfair text-2xl text-amor-texto-oscuro italic">
+                    "El siete es más que un número; es el latido constante de nuestra historia, Pamela." - Jason
+                </p>
             </div>
         </div>
     </section>
 
     <!-- ========== Sección de Cita o Pensamiento Romántico ========== -->
     <section class="py-20 sm:py-28 bg-cover bg-center bg-fixed" style="background-image: url('static/img/generales/fondo-cita-romantica.jpg');">
-        <div class="absolute inset-0 bg-amor-texto-principal/70"></div>
+        <div class="absolute inset-0 bg-amor-texto-oscuro/75"></div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <img src="static/img/iconos/comillas-elegantes.png" alt="Icono de comillas para destacar cita" class="h-12 sm:h-16 mx-auto mb-6 opacity-80">
             <p class="font-playfair text-3xl sm:text-4xl text-white italic max-w-3xl mx-auto leading-snug text-shadow-light">
-                "Amar no es mirarse el uno al otro; es mirar juntos en la misma dirección."
+                "En tus ojos encontré mi hogar, en tu sonrisa mi alegría, y en tu amor, mi para siempre."
             </p>
-            <p class="font-montserrat text-lg text-amor-rosa-suave/80 mt-6">- Antoine de Saint-Exupéry (o un pensamiento vuestro)</p>
+            <p class="font-montserrat text-lg text-amor-dorado-champan/80 mt-6">- Un pensamiento para Pamela, de Jason (o viceversa)</p>
         </div>
     </section>
 
     <!-- ========== Pie de Página ========== -->
-    <footer class="bg-amor-texto-principal text-amor-rosa-suave/80 py-16">
+    <footer class="bg-amor-texto-oscuro text-amor-dorado-champan/80 py-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <img src="static/img/generales/logo-jp-blanco.png" alt="Logo de Jason y Pamela en blanco para pie de página" class="h-10 mx-auto mb-6 opacity-90">
             <p class="font-playfair text-xl mb-3">Jason Dafnis & Pamela Massiel</p>
             <p class="text-sm font-montserrat mb-1">Con todo el amor del mundo, Chilca, Perú.</p>
-            <p class="text-sm font-montserrat mb-6">Siempre nuestro el <span class="font-semibold text-amor-rosa-medio">Siete</span> de cada mes.</p>
-            <p class="text-xs font-montserrat text-amor-rosa-suave/60">&copy; <span id="currentYear"></span> Nuestro Amor Infinito. Hecho con el corazón por Jason para Pamela.</p>
+            <p class="text-sm font-montserrat mb-6">Siempre nuestro el <span class="font-semibold text-amor-rosa-empolvado">Siete</span> de cada mes.</p>
+            <p class="text-xs font-montserrat text-amor-dorado-champan/60">&copy; <span id="currentYear"></span> Nuestro Amor Infinito. Hecho con el corazón por Jason para Pamela.</p>
         </div>
     </footer>
 
@@ -219,87 +235,29 @@
                 header.classList.remove('scrolled');
             }
         });
-
-        // Funcionalidad para Generar Mensaje con API Gemini
-        const generarMensajeBtn = document.getElementById('generarMensajeBtn');
-        const ideaPrincipalTextarea = document.getElementById('ideaPrincipal');
-        const mensajeGeneradoDiv = document.getElementById('mensajeGenerado');
-        const mensajeGeneradoParrafo = mensajeGeneradoDiv.querySelector('p');
-        const spinner = document.getElementById('spinner');
-        const errorMensajeP = document.getElementById('errorMensaje');
-
-        if (generarMensajeBtn) {
-            generarMensajeBtn.addEventListener('click', async () => {
-                const userInput = ideaPrincipalTextarea.value.trim();
-                if (!userInput) {
-                    errorMensajeP.textContent = 'Por favor, escribe algunas ideas o sentimientos.';
-                    errorMensajeP.classList.remove('hidden');
-                    return;
-                }
-
-                mensajeGeneradoDiv.classList.add('hidden');
-                errorMensajeP.classList.add('hidden');
-                spinner.classList.remove('hidden');
-                generarMensajeBtn.disabled = true;
-
-                const prompt = `Eres un poeta extremadamente romántico y un experto en expresar sentimientos profundos con originalidad y belleza. 
-                Tu tarea es ayudar a Jason a escribir un mensaje de amor para su amada Pamela.
-                Basándote en las siguientes ideas, palabras clave o sentimientos proporcionados por Jason: "${userInput}", 
-                escribe un breve y hermoso mensaje de amor, un poema corto o una dedicatoria muy emotiva.
-                El tono debe ser profundamente enamorado, sincero, y memorable. Evita clichés comunes y busca la belleza única en las palabras. 
-                El mensaje es de Jason para Pamela. Asegúrate que el resultado sea solo el mensaje o poema, sin introducciones ni despedidas adicionales tuyas.`;
-                
-                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-                const payload = { contents: chatHistory };
-                const apiKey = ""; 
-                const apiUrl = \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=\${apiKey}\`;
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || \`Error de la API: \${response.status}\`);
-                    }
-
-                    const result = await response.json();
-                    
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        mensajeGeneradoParrafo.textContent = text;
-                        mensajeGeneradoDiv.classList.remove('hidden');
-                    } else {
-                        console.error('Respuesta inesperada de la API:', result);
-                        throw new Error('No se pudo generar el mensaje. Respuesta inesperada de la API.');
-                    }
-
-                } catch (error) {
-                    console.error('Error al generar mensaje:', error);
-                    errorMensajeP.textContent = \`No se pudo generar el mensaje. \${error.message}\`;
-                    errorMensajeP.classList.remove('hidden');
-                } finally {
-                    spinner.classList.add('hidden');
-                    generarMensajeBtn.disabled = false;
-                }
-            });
-        }
-
-        // Script para scroll suave a secciones (si los botones de las tarjetas apuntan a secciones internas)
+        
+        // Script para scroll suave a secciones
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const targetId = this.getAttribute('href');
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
-                    targetElement.scrollIntoView({
+                    // Ajuste para el header fijo
+                    const headerOffset = document.querySelector('header').offsetHeight || 70; // Altura del header
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+                    window.scrollTo({
+                        top: offsetPosition,
                         behavior: 'smooth'
                     });
+
+                    // Cerrar menú móvil después de hacer clic (si está abierto)
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuButton.classList.remove('active');
+                    }
                 }
             });
         });
@@ -312,34 +270,46 @@
 
 /* Fuentes importadas en el HTML. */
 
-/* Estilos Base aplicados con Tailwind en el body */
+/* Estilos Base aplicados con Tailwind en el body:
+   font-family: 'Montserrat', sans-serif; (font-montserrat)
+   color: #362222; (text-amor-texto-oscuro)
+   background-color: #FFF8E7; (bg-amor-crema-calido)
+*/
 
 /* ========== Header y Navegación ========== */
+header {
+    /* Clases Tailwind: bg-white/90 backdrop-blur-lg shadow-md sticky top-0 z-[100] transition-all duration-300 */
+}
 header.scrolled { 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Sombra más sutil al hacer scroll */
+    background-color: rgba(255, 248, 231, 0.95); /* bg-amor-crema-calido con transparencia */
+}
+
+.logo-container img {
+    /* Clases Tailwind: h-10 sm:h-12 hover:opacity-80 transition-opacity */
 }
 
 .nav-link {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem; 
-    color: #C67B9A; /* amor-malva */
+    font-size: 1.05rem; /* Ligeramente más pequeño que antes para más elegancia */
+    color: #8B0000; /* amor-vino-tinto */
     padding: 0.5rem 0.25rem; 
     position: relative;
     transition: color 0.3s ease;
     text-decoration: none;
+    letter-spacing: 0.5px;
 }
 .nav-link:hover {
-    color: #5C3C48; /* amor-texto-principal */
+    color: #362222; /* amor-texto-oscuro */
 }
 .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -3px; /* Un poco más abajo */
     left: 0;
     width: 0;
-    height: 2px;
-    background-color: #C67B9A; /* amor-malva */
+    height: 1.5px; /* Línea más fina */
+    background-color: #8B0000; /* amor-vino-tinto */
     transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .nav-link:hover::after,
@@ -347,68 +317,70 @@ header.scrolled {
     width: 100%;
 }
 .nav-link.active {
-    color: #5C3C48; /* amor-texto-principal */
-    font-weight: 500; 
+    color: #362222; /* amor-texto-oscuro */
+    font-weight: 600; /* Un poco más de peso */
 }
 
 .mobile-nav-link {
     display: block;
-    padding: 0.75rem 1.5rem; 
+    padding: 0.85rem 1.5rem; 
     font-family: 'Playfair Display', serif;
-    color: #C67B9A; /* amor-malva */
+    font-size: 1.1rem;
+    color: #8B0000; /* amor-vino-tinto */
     transition: background-color 0.3s ease, color 0.3s ease;
     text-decoration: none;
+    border-bottom: 1px solid #F7E7CE; /* amor-dorado-champan muy suave como separador */
+}
+.mobile-nav-link:last-child {
+    border-bottom: none;
 }
 .mobile-nav-link:hover, .mobile-nav-link.active {
-    background-color: #FAE8E0; /* amor-rosa-suave */
-    color: #5C3C48; /* amor-texto-principal */
+    background-color: #F7E7CE; /* amor-dorado-champan */
+    color: #362222; /* amor-texto-oscuro */
 }
 
 /* ========== Hero Section ========== */
 .hero-bg-image { 
-    filter: brightness(0.9) saturate(1.1); 
+    filter: brightness(0.85) saturate(1.05) contrast(0.95); /* Ajuste de imagen más sutil */
 }
 
 .text-shadow-romantic {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(230, 168, 215, 0.3); 
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(139, 0, 0, 0.2); /* Sombra + brillo vino tinto */
 }
 .text-shadow-light {
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .special-date-container img { 
-    transition: transform 0.4s ease-in-out;
+    transition: transform 0.4s ease-in-out, filter 0.3s ease;
 }
 .special-date-container:hover img {
-    transform: rotate(15deg) scale(1.1);
+    transform: rotate(10deg) scale(1.15);
+    filter: drop-shadow(0 0 10px rgba(247, 231, 206, 0.5)); /* Brillo dorado al icono */
 }
 
 .button-romantic {
     display: inline-block;
-    background-image: linear-gradient(to right, #E6A8D7, #C67B9A); 
+    background-image: linear-gradient(to right, #8B0000, #C67B9A); /* amor-vino-tinto to amor-malva */
     color: white;
     font-family: 'Playfair Display', serif;
-    font-weight: 500; 
-    padding: 0.85rem 2.25rem; 
-    border-radius: 50px; 
+    font-weight: 600; 
+    padding: 0.9rem 2.5rem; 
+    border-radius: 8px; /* Bordes menos redondeados, más elegantes */
     text-decoration: none;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 4px 15px rgba(198, 123, 154, 0.4);
-    letter-spacing: 0.5px;
+    box-shadow: 0 5px 18px rgba(139, 0, 0, 0.3);
+    letter-spacing: 0.8px;
+    text-transform: uppercase; /* Ligeramente mayúsculas para más impacto */
+    font-size: 0.9rem;
 }
 .button-romantic:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(198, 123, 154, 0.6);
-    background-image: linear-gradient(to right, #C67B9A, #E6A8D7);
-}
-.button-romantic:disabled { 
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 15px rgba(198, 123, 154, 0.4);
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 25px rgba(139, 0, 0, 0.4);
+    background-image: linear-gradient(to right, #C67B9A, #8B0000);
 }
 
-
+/* Animaciones (sin cambios respecto a la versión anterior) */
 .animate-fade-in-down { animation: fadeInDown 1s ease-out 0.2s forwards; opacity:0; }
 .animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; opacity:0; }
 .delay-300 { animation-delay: 0.3s; }
@@ -419,10 +391,10 @@ header.scrolled {
 @keyframes fadeInDown { from { opacity: 0; transform: translateY(-35px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(35px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ========== Sección Bienvenida / Tarjetas ========== */
+/* ========== Sección Bienvenida / Tarjetas / Capítulos Historia ========== */
 .section-title-romantic {
     position: relative;
-    padding-bottom: 0.75rem; 
+    padding-bottom: 0.85rem; 
 }
 .section-title-romantic::after {
     content: '';
@@ -430,99 +402,85 @@ header.scrolled {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px; 
-    height: 3px;
-    background-image: linear-gradient(to right, #E6A8D7, #C67B9A); 
+    width: 100px; 
+    height: 2.5px;
+    background-image: linear-gradient(to right, #8B0000, #D8BFD8); /* amor-vino-tinto to amor-rosa-empolvado */
     border-radius: 2px;
 }
 
 .card-romantic {
-    background-color: white;
-    padding: 2.5rem; 
-    border-radius: 1rem; 
-    box-shadow: 0 10px 25px rgba(198, 123, 154, 0.1);
+    background-color: #fff; /* Fondo blanco para las tarjetas para que destaquen sobre el bg-amor-crema-calido */
+    padding: 2.25rem; 
+    border-radius: 0.75rem; /* rounded-lg */
+    box-shadow: 0 8px 20px rgba(106, 93, 93, 0.08); /* Sombra más suave con amor-texto-grisaceo */
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center; /* Asegura que el texto de la tarjeta también esté centrado */
+    text-align: center; 
 }
 .card-romantic:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 35px rgba(198, 123, 154, 0.2);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(106, 93, 93, 0.12);
 }
 .card-icon-romantic { 
-    height: 5rem; 
-    width: 5rem; 
-    margin-bottom: 1.5rem; 
-    opacity: 0.85;
+    height: 4.5rem; 
+    width: 4.5rem; 
+    margin-bottom: 1.25rem; 
+    opacity: 0.9;
+    filter: grayscale(30%) sepia(20%) hue-rotate(-10deg) saturate(1.5); /* Tinte sutil a los iconos */
 }
 .card-title-romantic {
     font-family: 'Playfair Display', serif;
-    font-size: 1.75rem; 
-    color: #5C3C48; 
-    margin-bottom: 0.75rem; 
+    font-size: 1.6rem; 
+    color: #362222; /* amor-texto-oscuro */
+    margin-bottom: 0.65rem; 
 }
 .card-text-romantic {
-    color: #7D5A68; 
-    margin-bottom: 1.5rem; 
-    font-size: 0.95rem;
-    line-height: 1.6;
+    color: #6A5D5D; /* amor-texto-grisaceo */
+    margin-bottom: 1.25rem; 
+    font-size: 0.9rem;
+    line-height: 1.65;
 }
 .button-card-romantic {
     display: inline-block;
-    background-color: #C67B9A; 
+    background-color: #8B0000; /* amor-vino-tinto */
     color: white;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500; 
-    padding: 0.65rem 1.75rem;
-    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px; /* Menos redondeado */
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(198, 123, 154, 0.3);
+    box-shadow: 0 2px 6px rgba(139, 0, 0, 0.25);
+    font-size: 0.85rem;
 }
 .button-card-romantic:hover {
-    background-color: #5C3C48; 
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(92, 60, 72, 0.4);
+    background-color: #362222; /* amor-texto-oscuro */
+    transform: scale(1.03);
+    box-shadow: 0 3px 10px rgba(54, 34, 34, 0.3);
 }
 
-/* Estilos para Capítulos en nuestra-historia.html (o si se integran en index.html) */
 .historia-capitulo img {
-    border: 5px solid white; 
+    border: 6px solid #FFF8E7; /* amor-crema-calido como borde */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 8px 20px rgba(106, 93, 93, 0.1);
 }
 .historia-capitulo p {
-    font-size: 1.05rem; 
-}
-
-
-/* ========== Estilos para la sección de IA ========== */
-#ideaPrincipal {
-    font-family: 'Montserrat', sans-serif;
-    resize: vertical; 
-}
-#ideaPrincipal::placeholder {
-    color: #A89098; 
-}
-
-.loader-romantic { /* Spinner de carga */
-  border: 4px solid #f3f3f3; 
-  border-top: 4px solid #C67B9A; /* amor-malva */
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-#mensajeGenerado p {
-    font-size: 1.05rem;
+    font-size: 1rem; 
     line-height: 1.7;
+}
+
+/* Galería */
+.gallery-image {
+    border-radius: 0.5rem; /* rounded-md */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.gallery-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
 }
 
 /* Ajustes generales */
@@ -533,8 +491,8 @@ img {
 }
 
 ::selection { 
-    background-color: #FAD2E1; /* amor-rosa-medio */
-    color: #5C3C48; /* amor-texto-principal */
+    background-color: #D8BFD8; /* amor-rosa-empolvado */
+    color: #362222; /* amor-texto-oscuro */
 }
 
 /* Scrollbar (opcional) */
@@ -542,12 +500,12 @@ img {
     width: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: #FAE8E0; /* amor-rosa-suave */
+    background: #FFF8E7; /* amor-crema-calido */
 }
 ::-webkit-scrollbar-thumb {
-    background: #E6A8D7; /* amor-rosa-fuerte */
+    background: #D8BFD8; /* amor-rosa-empolvado */
     border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #C67B9A; /* amor-malva */
+    background: #C67B9A; /* amor-malva (del config anterior, pero funciona bien) */
 }
