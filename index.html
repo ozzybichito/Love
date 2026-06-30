@@ -100,6 +100,10 @@
         .newspaper-footer { padding: 10px 20px; background: #fff; border-top: 3px solid #000; text-align: center; }
         .newspaper-footer input { font-family: 'Roboto Condensed', sans-serif; font-size: 14px; font-weight: bold; color: #000; text-transform: uppercase; letter-spacing: 0.5px; border: none; background: transparent; width: 100%; text-align: center; outline: none; }
 
+        /* Modal de vista previa de imagen */
+        #image-preview-modal .modal { max-width: 95vw; text-align: center; }
+        #preview-image { max-height: 60vh; max-width: 100%; border: 2px solid #ccc; border-radius: 8px; margin-bottom: 12px; }
+
         /* Estilos de impresión */
         @media print {
             body { background: white; padding: 0; margin: 0; }
@@ -188,7 +192,7 @@
             <button class="btn-action btn-toggle-clues" id="btn-toggle-clues" onclick="toggleClues()">👁️ Ocultar Pistas</button>
             <button class="btn-action btn-save" onclick="showSavePresetModal()">💾 Guardar Preset</button>
             <button class="btn-action btn-load" onclick="togglePresetsPanel()">📂 Cargar Preset</button>
-            <button class="btn-action btn-download" onclick="downloadPNG()">📸 Descargar PNG</button>
+            <button class="btn-action btn-download" onclick="captureAndShow()">📸 Generar imagen</button>
             <button class="btn-action btn-print" onclick="window.print()">🖨️ Imprimir / PDF</button>
         </div>
     </div>
@@ -219,6 +223,20 @@
         </div>
     </div>
     <div class="modal-overlay" id="save-preset-modal"><div class="modal"><h3>💾 Guardar Preset</h3><input type="text" id="preset-name-input" placeholder="Nombre del preset..." maxlength="50"><div class="modal-actions"><button class="btn-modal-save" onclick="savePreset()">Guardar</button><button class="btn-modal-cancel" onclick="hideSavePresetModal()">Cancelar</button></div></div></div>
+    
+    <!-- Modal para vista previa de imagen -->
+    <div class="modal-overlay" id="image-preview-modal">
+        <div class="modal" style="max-width: 95vw; text-align: center;">
+            <h3>📸 Imagen generada</h3>
+            <img id="preview-image" style="max-height: 60vh; max-width: 100%; border: 2px solid #ccc; border-radius: 8px; margin-bottom: 12px;" alt="Vista previa del crucigrama" />
+            <div class="modal-actions">
+                <button class="btn-modal-save" id="share-image-btn">📤 Compartir</button>
+                <button class="btn-modal-cancel" onclick="closeImagePreview()">Cerrar</button>
+            </div>
+            <p style="font-size: 10px; color: #666; margin-top: 8px;">Si no puedes compartir, mantén pulsada la imagen para guardar.</p>
+        </div>
+    </div>
+
     <div class="autosave-indicator" id="autosave-indicator">✓ Guardado</div>
     <div class="toast" id="toast"></div>
     <div class="photo-controls" id="photo-controls-ui">
@@ -530,8 +548,8 @@
         function toggleSolutions() { hideSolutionsActive = !hideSolutionsActive; const btn = document.getElementById('btn-toggle'); const captureArea = document.getElementById('capture-area'); if (hideSolutionsActive) { captureArea.classList.add('hide-solutions-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; } else { captureArea.classList.remove('hide-solutions-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; } }
         function toggleClues() { hideCluesActive = !hideCluesActive; const btn = document.getElementById('btn-toggle-clues'); const captureArea = document.getElementById('capture-area'); if (hideCluesActive) { captureArea.classList.add('hide-clues-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; } else { captureArea.classList.remove('hide-clues-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; } autosave(); }
 
-        // === DESCARGA FIABLE DE PNG (Blob + URL) ===
-        function downloadPNG() {
+        // === NUEVA FUNCIÓN: CAPTURAR Y MOSTRAR PREVIEW ===
+        function captureAndShow() {
             document.getElementById('cell-popover-menu').style.display = 'none';
             const footer = document.getElementById('footer-section');
             if (footer) footer.style.display = 'none';
@@ -547,34 +565,43 @@
             }).then(canvas => {
                 if (footer) footer.style.display = '';
 
-                // Convertir a blob y forzar descarga con URL temporal
-                canvas.toBlob(blob => {
-                    if (!blob) {
-                        // Fallback a dataURL
-                        const link = document.createElement('a');
-                        link.download = generateFileName() + '.png';
-                        link.href = canvas.toDataURL('image/png');
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        showToast('✅ PNG descargado (modo alternativo)', 'success');
-                        return;
-                    }
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = generateFileName() + '.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    showToast('✅ PNG guardado en Descargas', 'success');
-                }, 'image/png');
+                const dataUrl = canvas.toDataURL('image/png');
+                const previewImg = document.getElementById('preview-image');
+                previewImg.src = dataUrl;
+                document.getElementById('image-preview-modal').classList.add('visible');
+
+                // Configurar botón compartir
+                document.getElementById('share-image-btn').onclick = () => shareImage(dataUrl);
+                showToast('✅ Imagen lista. Toca "Compartir" o mantén pulsada la imagen.', 'success');
             }).catch(err => {
                 if (footer) footer.style.display = '';
                 console.error('Error al generar PNG:', err);
                 showToast('❌ No se pudo generar la imagen. Use Imprimir/PDF.', 'error');
             });
+        }
+
+        function closeImagePreview() {
+            document.getElementById('image-preview-modal').classList.remove('visible');
+        }
+
+        async function shareImage(dataUrl) {
+            try {
+                const blob = await (await fetch(dataUrl)).blob();
+                const file = new File([blob], generateFileName() + '.png', { type: 'image/png' });
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ files: [file], title: 'J. DAFNIS GRAMA' });
+                    showToast('✅ Imagen compartida', 'success');
+                } else {
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]);
+                    showToast('📋 Imagen copiada al portapapeles. Pégala en WhatsApp.', 'success');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('❌ No se pudo compartir. Mantén pulsada la imagen para guardar.', 'error');
+            }
+            closeImagePreview();
         }
 
         function updateFont() {
