@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700;900&family=Caveat:wght@700&family=Georgia&display=swap" rel="stylesheet">
     <style>
+        /* ... mismo CSS de la respuesta anterior ... */
         :root {
             --grid-cols: 14;
             --grid-rows: 12;
@@ -107,7 +108,6 @@
         .newspaper-footer { padding: 10px 20px; background: #fff; border-top: 3px solid #000; text-align: center; }
         .newspaper-footer input { font-family: 'Roboto Condensed', sans-serif; font-size: 14px; font-weight: bold; color: #000; text-transform: uppercase; letter-spacing: 0.5px; border: none; background: transparent; width: 100%; text-align: center; outline: none; }
 
-        /* Estilos de impresión: oculta paneles, muestra solo el crucigrama */
         @media print {
             body { background: white; padding: 0; }
             .admin-panel, .presets-panel, .context-menu-popover, .photo-controls, .modal-overlay,
@@ -152,6 +152,7 @@
     </style>
 </head>
 <body>
+    <!-- ... el HTML es el mismo de la respuesta anterior ... -->
     <div class="admin-panel">
         <div class="section-title">Estructura de Cuadrados (Alto por Largo Independiente)</div>
         <div class="panel-row">
@@ -533,45 +534,63 @@
         function setupDrag(el) { let mouseX = 0, mouseY = 0; el.addEventListener('mousedown', dragStart); el.addEventListener('touchstart', dragStart, { passive: false }); function dragStart(e) { if (e.type === 'touchstart') { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } else { e.preventDefault(); mouseX = e.clientX; mouseY = e.clientY; } document.addEventListener('mousemove', dragMove); document.addEventListener('touchmove', dragMove, { passive: false }); document.addEventListener('mouseup', dragEnd); document.addEventListener('touchend', dragEnd); } function dragMove(e) { let clientX, clientY; if (e.type === 'touchmove') { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } else { clientX = e.clientX; clientY = e.clientY; } let dx = clientX - mouseX; let dy = clientY - mouseY; let currentLeft = parseInt(el.style.left) || 0; let currentTop = parseInt(el.style.top) || 0; el.style.left = (currentLeft + dx) + 'px'; el.style.top = (currentTop + dy) + 'px'; mouseX = clientX; mouseY = clientY; } function dragEnd() { document.removeEventListener('mousemove', dragMove); document.removeEventListener('touchmove', dragMove); document.removeEventListener('mouseup', dragEnd); document.removeEventListener('touchend', dragEnd); const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')); let currentLeft = parseInt(el.style.left); let currentTop = parseInt(el.style.top); let gx = Math.round(currentLeft / (cellSize + 1)); let gy = Math.round(currentTop / (cellSize + 1)); if (gx < 0) gx = 0; if (gy < 0) gy = 0; if (gx + parseInt(el.dataset.sw) > currentCols) gx = currentCols - parseInt(el.dataset.sw); if (gy + parseInt(el.dataset.sh) > currentRows) gy = currentRows - parseInt(el.dataset.sh); el.dataset.gx = gx; el.dataset.gy = gy; refreshOverlayPosition(el); } }
         function toggleSolutions() { hideSolutionsActive = !hideSolutionsActive; const btn = document.getElementById('btn-toggle'); const captureArea = document.getElementById('capture-area'); if (hideSolutionsActive) { captureArea.classList.add('hide-solutions-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; } else { captureArea.classList.remove('hide-solutions-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; } }
         function toggleClues() { hideCluesActive = !hideCluesActive; const btn = document.getElementById('btn-toggle-clues'); const captureArea = document.getElementById('capture-area'); if (hideCluesActive) { captureArea.classList.add('hide-clues-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; } else { captureArea.classList.remove('hide-clues-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; } autosave(); }
-        
-        // Exportar PNG con fallback mejorado para móviles
+
+        // === EXPORTACIÓN DE PNG CORREGIDA PARA ANDROID ===
         function exportToPng() {
             document.getElementById('cell-popover-menu').style.display = 'none';
             const area = document.getElementById('capture-area');
             showToast('Generando imagen...', 'info');
-            html2canvas(area, { scale: 2, useCORS: true, backgroundColor: "#ffffff", allowTaint: false })
+            
+            // Configuración segura para html2canvas
+            const options = {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+                allowTaint: false
+            };
+            
+            html2canvas(area, options)
             .then(canvas => {
-                // Usar toBlob para mejor compatibilidad en móviles
-                canvas.toBlob(function(blob) {
-                    if (blob) {
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = generateFileName() + '.png';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        URL.revokeObjectURL(url);
-                        showToast('✅ PNG descargado', 'success');
-                    } else {
-                        // Fallback a dataURL si toBlob no funciona
-                        const link = document.createElement('a');
-                        link.download = generateFileName() + '.png';
-                        link.href = canvas.toDataURL('image/png');
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        showToast('✅ PNG descargado (modo alternativo)', 'success');
-                    }
-                }, 'image/png');
+                // Usar toDataURL como método principal (compatible con todos los navegadores)
+                const imgData = canvas.toDataURL('image/png');
+                const fileName = generateFileName() + '.png';
+                
+                // Crear enlace de descarga
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = imgData;
+                
+                // Añadir al DOM, hacer clic y eliminar
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showToast('✅ PNG descargado: ' + fileName, 'success');
             })
             .catch(err => {
-                console.error('Error al exportar PNG:', err);
-                showToast('❌ No se pudo generar PNG. Use "Imprimir / PDF" como alternativa.', 'error');
+                console.error('Error al generar PNG:', err);
+                // Intentar con método alternativo (menor escala)
+                html2canvas(area, { scale: 1, useCORS: true, backgroundColor: "#ffffff", logging: false })
+                .then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const fileName = generateFileName() + '.png';
+                    const link = document.createElement('a');
+                    link.download = fileName;
+                    link.href = imgData;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast('✅ PNG descargado (modo alternativo)', 'success');
+                })
+                .catch(err2 => {
+                    console.error('Error en modo alternativo:', err2);
+                    showToast('❌ No se pudo generar PNG. Use "Imprimir / PDF".', 'error');
+                });
             });
         }
 
-        // Nueva función para imprimir/PDF
+        // Imprimir / PDF
         function printPDF() {
             document.getElementById('cell-popover-menu').style.display = 'none';
             window.print();
