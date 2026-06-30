@@ -7,7 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700;900&family=Caveat:wght@700&family=Georgia&display=swap" rel="stylesheet">
     <style>
-        /* ... mismo CSS de la respuesta anterior ... */
         :root {
             --grid-cols: 14;
             --grid-rows: 12;
@@ -39,8 +38,7 @@
         .btn-action { flex: 1; padding: 11px; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; cursor: pointer; color: white; min-width: 100px; }
         .btn-toggle { background: #2563eb; } .btn-toggle.active-hide { background: #ea580c; }
         .btn-toggle-clues { background: #8b5cf6; } .btn-toggle-clues.active-hide { background: #c2410c; }
-        .btn-export { background: #16a34a; }
-        .btn-print { background: #f59e0b; color: #000; }
+        .btn-share { background: #0ea5e9; }
         .workspace-scroll { width: 100%; max-width: 1100px; overflow-x: auto; overflow-y: hidden; background: #cbd5e1; padding: 15px; border-radius: 12px; border: 2px solid #94a3b8; display: block; }
         .capture-canvas { background: #ffffff; padding: 0; width: max-content; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 4px solid #fff; }
         .newspaper-top { display: flex; justify-content: space-between; align-items: flex-end; padding: 15px 20px 8px 20px; background: #fff; border-bottom: 5px solid #ee2a24; }
@@ -108,15 +106,6 @@
         .newspaper-footer { padding: 10px 20px; background: #fff; border-top: 3px solid #000; text-align: center; }
         .newspaper-footer input { font-family: 'Roboto Condensed', sans-serif; font-size: 14px; font-weight: bold; color: #000; text-transform: uppercase; letter-spacing: 0.5px; border: none; background: transparent; width: 100%; text-align: center; outline: none; }
 
-        @media print {
-            body { background: white; padding: 0; }
-            .admin-panel, .presets-panel, .context-menu-popover, .photo-controls, .modal-overlay,
-            .autosave-indicator, .toast, .workspace-scroll { display: none !important; }
-            .capture-canvas { box-shadow: none; border: none; margin: 0 auto; }
-            .newspaper-top, .newspaper-footer { background: white; }
-            .grid-wrapper { padding: 2px; background-color: #ee2a24; }
-        }
-
         @media (max-width: 768px) {
             :root { --cell-size: 42px; }
             body { padding: 8px; }
@@ -152,7 +141,6 @@
     </style>
 </head>
 <body>
-    <!-- ... el HTML es el mismo de la respuesta anterior ... -->
     <div class="admin-panel">
         <div class="section-title">Estructura de Cuadrados (Alto por Largo Independiente)</div>
         <div class="panel-row">
@@ -193,18 +181,17 @@
             <button class="btn-action btn-toggle-clues" id="btn-toggle-clues" onclick="toggleClues()">👁️ Ocultar Pistas</button>
             <button class="btn-action btn-save" onclick="showSavePresetModal()">💾 Guardar Preset</button>
             <button class="btn-action btn-load" onclick="togglePresetsPanel()">📂 Cargar Preset</button>
-            <button class="btn-action btn-export" onclick="exportToPng()">📸 Guardar PNG</button>
-            <button class="btn-action btn-print" onclick="printPDF()">🖨️ Imprimir / PDF</button>
+            <button class="btn-action btn-share" onclick="shareOrDownload()">📤 Compartir / Guardar</button>
         </div>
     </div>
     <div class="presets-panel" id="presets-panel"><div class="section-title">Presets Guardados</div><div class="presets-list" id="presets-list"><div class="no-presets">No hay presets guardados aún</div></div></div>
     <div class="workspace-scroll">
         <div class="capture-canvas" id="capture-area">
-            <div class="newspaper-top">
+            <div class="newspaper-top" id="title-section">
                 <div class="main-title">J. DAFNIS<span>GRAMA</span></div>
                 <div class="meta-right"><input type="text" id="live-date" value="DOMINGO" placeholder="Fecha"></div>
             </div>
-            <div class="grid-wrapper"><div class="grid-container" id="grid-main"></div></div>
+            <div class="grid-wrapper" id="grid-section"><div class="grid-container" id="grid-main"></div></div>
             <div class="newspaper-footer"><input type="text" id="footer-text" value="ESCUELA DE EDUCACIÓN SUPERIOR PEDAGÓGICA PÚBLICA JULIACA - MATEMÁTICAS" placeholder="Pie de página"></div>
             <div class="context-menu-popover" id="cell-popover-menu">
                 <div class="pop-title">🎨 Color de Celda</div>
@@ -535,65 +522,63 @@
         function toggleSolutions() { hideSolutionsActive = !hideSolutionsActive; const btn = document.getElementById('btn-toggle'); const captureArea = document.getElementById('capture-area'); if (hideSolutionsActive) { captureArea.classList.add('hide-solutions-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; } else { captureArea.classList.remove('hide-solutions-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; } }
         function toggleClues() { hideCluesActive = !hideCluesActive; const btn = document.getElementById('btn-toggle-clues'); const captureArea = document.getElementById('capture-area'); if (hideCluesActive) { captureArea.classList.add('hide-clues-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; } else { captureArea.classList.remove('hide-clues-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; } autosave(); }
 
-        // === EXPORTACIÓN DE PNG CORREGIDA PARA ANDROID ===
-        function exportToPng() {
+        // === COMPARTIR O DESCARGAR SOLO TÍTULO + CRUCIGRAMA ===
+        async function shareOrDownload() {
             document.getElementById('cell-popover-menu').style.display = 'none';
-            const area = document.getElementById('capture-area');
+            const titleSection = document.getElementById('title-section');
+            const gridSection = document.getElementById('grid-section');
+            const footerSection = document.querySelector('.newspaper-footer');
+            
+            // Ocultar temporalmente el pie de página para la captura
+            if (footerSection) footerSection.style.display = 'none';
+            
+            // Crear un contenedor temporal que combine título y cuadrícula
+            const tempContainer = document.createElement('div');
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '0';
+            tempContainer.style.backgroundColor = '#ffffff';
+            tempContainer.appendChild(titleSection.cloneNode(true));
+            tempContainer.appendChild(gridSection.cloneNode(true));
+            document.body.appendChild(tempContainer);
+            
             showToast('Generando imagen...', 'info');
             
-            // Configuración segura para html2canvas
-            const options = {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                logging: false,
-                allowTaint: false
-            };
-            
-            html2canvas(area, options)
-            .then(canvas => {
-                // Usar toDataURL como método principal (compatible con todos los navegadores)
-                const imgData = canvas.toDataURL('image/png');
+            try {
+                const canvas = await html2canvas(tempContainer, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false, allowTaint: false });
+                // Restaurar footer
+                if (footerSection) footerSection.style.display = '';
+                document.body.removeChild(tempContainer);
+                
                 const fileName = generateFileName() + '.png';
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                if (!blob) throw new Error('No se pudo crear el blob');
                 
-                // Crear enlace de descarga
+                const file = new File([blob], fileName, { type: 'image/png' });
+                
+                // Intentar compartir (Android)
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({ title: 'J. DAFNIS GRAMA', text: 'Crucigrama', files: [file] });
+                    showToast('✅ Compartido exitosamente', 'success');
+                    return;
+                }
+                
+                // Descargar
+                const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
+                link.href = url;
                 link.download = fileName;
-                link.href = imgData;
-                
-                // Añadir al DOM, hacer clic y eliminar
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                
+                URL.revokeObjectURL(url);
                 showToast('✅ PNG descargado: ' + fileName, 'success');
-            })
-            .catch(err => {
-                console.error('Error al generar PNG:', err);
-                // Intentar con método alternativo (menor escala)
-                html2canvas(area, { scale: 1, useCORS: true, backgroundColor: "#ffffff", logging: false })
-                .then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const fileName = generateFileName() + '.png';
-                    const link = document.createElement('a');
-                    link.download = fileName;
-                    link.href = imgData;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    showToast('✅ PNG descargado (modo alternativo)', 'success');
-                })
-                .catch(err2 => {
-                    console.error('Error en modo alternativo:', err2);
-                    showToast('❌ No se pudo generar PNG. Use "Imprimir / PDF".', 'error');
-                });
-            });
-        }
-
-        // Imprimir / PDF
-        function printPDF() {
-            document.getElementById('cell-popover-menu').style.display = 'none';
-            window.print();
+            } catch (err) {
+                console.error('Error:', err);
+                if (footerSection) footerSection.style.display = '';
+                if (document.body.contains(tempContainer)) document.body.removeChild(tempContainer);
+                showToast('❌ Error al generar imagen. Intente de nuevo.', 'error');
+            }
         }
 
         function updateFont() {
