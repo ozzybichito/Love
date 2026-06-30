@@ -2,118 +2,506 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <!-- Viewport meta tag: Essential for responsive design on mobile devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Para ti, Pamela</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>J. DAFNIS GRAMA - Edición Profesional</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Condensed:wght@400;700;900&family=Caveat:wght@700&family=Georgia&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Lora', serif;
+        :root {
+            --grid-cols: 14;
+            --grid-rows: 12;
+            --cell-size: 60px;
+            --yellow-cell: #ffea30;
+            --white-cell: #f2f2f2;
+            --custom-cell-color: #a855f7;
+            --border-color: #000000;
+            --red-accent: #ee2a24;
+            --letter-font: 'Caveat', cursive;
+            --letter-size-multiplier: 0.35;
         }
-        .font-dancing-script {
-            font-family: 'Dancing Script', cursive;
-        }
-        /* Animation for the card to appear */
-        .card-animation {
-            animation: fadeIn 2s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Animation for the beating heart */
-        .heart-icon {
-            color: #E8A0BF;
-            animation: beat 1.5s infinite ease-in-out;
-        }
-        @keyframes beat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        /* Animation for the intro screen */
-        .intro-animation {
-            animation: fadeIn 1.5s ease-in-out;
-        }
-        /* Fade out animation for the exit */
-        .fade-out {
-            animation: fadeOut 1s forwards;
-        }
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                transform: scale(0.9);
-                visibility: hidden;
-            }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f1f5f9; padding: 12px; display: flex; flex-direction: column; align-items: center; }
+        .admin-panel { width: 100%; max-width: 1100px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .section-title { font-size: 11px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 8px; border-left: 4px solid #dc2626; padding-left: 8px; letter-spacing: 0.5px; }
+        .panel-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; align-items: center; }
+        .panel-group { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 150px; }
+        label { font-size: 11px; font-weight: bold; color: #475569; text-transform: uppercase; white-space: nowrap; }
+        input[type="number"], select, input[type="color"] { padding: 7px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: bold; text-align: center; background: #f8fafc; }
+        input[type="number"] { width: 70px; } input[type="color"] { width: 45px; height: 34px; padding: 2px; cursor: pointer; }
+        input[type="range"] { width: 100px; accent-color: #dc2626; }
+        .tool-selector { display: flex; gap: 5px; flex-wrap: wrap; width: 100%; background: #f1f5f9; padding: 5px; border-radius: 8px; }
+        .tool-btn { padding: 9px 12px; border: 1px solid #cbd5e1; background: #fff; font-size: 11px; font-weight: bold; border-radius: 6px; cursor: pointer; flex: 1; text-align: center; text-transform: uppercase; }
+        .tool-btn.active { background: #dc2626; color: white; border-color: #dc2626; box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3); }
+        .toggle-paint-mode { background: #0284c7; color: white; border: none; padding: 10px 14px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; text-transform: uppercase; }
+        .toggle-paint-mode.active-drag { background: #22c55e; }
+        .actions-row { display: flex; gap: 8px; width: 100%; }
+        .btn-action { flex: 1; padding: 11px; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; cursor: pointer; color: white; }
+        .btn-toggle { background: #2563eb; } .btn-toggle.active-hide { background: #ea580c; }
+        .btn-toggle-clues { background: #8b5cf6; } .btn-toggle-clues.active-hide { background: #c2410c; }
+        .btn-export { background: #16a34a; }
+        .workspace-scroll { width: 100%; max-width: 1100px; overflow-x: auto; overflow-y: hidden; background: #cbd5e1; padding: 15px; border-radius: 12px; border: 2px solid #94a3b8; display: block; }
+        .capture-canvas { background: #ffffff; padding: 0; width: max-content; position: relative; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 4px solid #fff; }
+        .newspaper-top { display: flex; justify-content: space-between; align-items: flex-end; padding: 15px 20px 8px 20px; background: #fff; border-bottom: 5px solid #ee2a24; }
+        .newspaper-top .main-title { font-family: 'Oswald', sans-serif; font-size: 45px; text-transform: uppercase; font-weight: 900; line-height: 0.9; color: #000; letter-spacing: 1px;}
+        .newspaper-top .main-title span { color: #ee2a24; }
+        .newspaper-top .meta-right input { font-family: 'Roboto Condensed', sans-serif; font-size: 15px; font-weight: bold; color: #444; padding-bottom: 5px; border: none; background: transparent; text-align: right; width: 200px; outline: none; }
+        .grid-wrapper { padding: 5px; background-color: #ee2a24; }
+        .grid-container { display: grid; grid-template-columns: repeat(var(--grid-cols), var(--cell-size)); grid-auto-rows: var(--cell-size); gap: 1px; background-color: var(--border-color); border: 2px solid var(--border-color); position: relative; user-select: none; }
+        .grid-cell { background-color: var(--white-cell); position: relative; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+        .br-top { border-top: 4px solid #dc2626 !important; } .br-bottom { border-bottom: 4px solid #dc2626 !important; } .br-left { border-left: 4px solid #dc2626 !important; } .br-right { border-right: 4px solid #dc2626 !important; }
+        .grid-cell.cell-yellow { background-color: var(--yellow-cell); } .grid-cell.cell-black { background-color: var(--border-color); } .grid-cell.cell-custom { background-color: var(--custom-cell-color); }
+        .input-letter { width: 100%; height: 100%; border: none; background: transparent; text-align: center; font-family: var(--letter-font); font-size: calc(var(--cell-size) * var(--letter-size-multiplier)); font-weight: 700; color: #1a1a1a; text-transform: uppercase; outline: none; padding: 0; line-height: 1; }
+        .hide-solutions-mode .input-letter { color: transparent !important; caret-color: transparent !important; }
+        .hide-clues-mode .line-clue-box,
+        .hide-clues-mode .grid-cell.cell-clue { display: none !important; }
+        .grid-cell.cell-large-arrow { background-color: var(--white-cell); padding: 0; cursor: pointer; }
+        .grid-cell.cell-large-arrow svg { width: 100%; height: 100%; display: block; }
+        .line-clue-box { position: absolute; background: #ffffff; border: 1.5px solid #000000; z-index: 100; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 2px; }
+        .line-clue-box textarea { width: 100%; height: 100%; border: none; background: transparent; font-family: 'Roboto Condensed', 'Arial', sans-serif; font-weight: 700; line-height: 1.15; text-align: center; resize: none; outline: none; text-transform: uppercase; overflow: hidden; padding: 2px; letter-spacing: -0.3px; white-space: pre-wrap; color: #000; font-size: 10px; }
+        .line-clue-box.horizontal textarea { writing-mode: horizontal-tb; }
+        .line-clue-box.vertical textarea { writing-mode: vertical-rl; text-orientation: mixed; }
+        .line-clue-box .arrow-indicator { position: absolute; pointer-events: none; z-index: 101; }
+        .grid-cell.cell-clue { background-color: #ffffff; padding: 1px; border: 1px solid #ccc; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .clue-textarea { width: 100%; height: 95%; border: none; background: transparent; font-family: 'Roboto Condensed', sans-serif; font-size: calc(var(--cell-size) * 0.22); line-height: 0.95; text-align: center; resize: none; text-transform: uppercase; outline: none; overflow: hidden; font-weight: 900; letter-spacing: -0.5px; }
+        .image-overlay-box { position: absolute; background-color: rgba(226, 232, 240, 0.85); border: 2px solid transparent; background-size: cover; background-position: center; background-repeat: no-repeat; cursor: move; z-index: 20; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .image-overlay-box.ready { border: 1px solid #000; }
+        .shape-rect { border-radius: 0; } .shape-rounded { border-radius: 12px; } .shape-circle { border-radius: 50%; }
+        .context-menu-popover { position: absolute; background: #0f172a; border-radius: 8px; padding: 12px; display: none; flex-direction: column; gap: 8px; z-index: 5000; box-shadow: 0 6px 20px rgba(0,0,0,0.4); border: 1px solid #475569; width: 300px; max-height: 80vh; overflow-y: auto; }
+        .context-menu-popover .pop-row { display: flex; gap: 4px; justify-content: space-between; }
+        .context-menu-popover button { border: none; padding: 6px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; color: #fff; text-transform: uppercase; flex: 1; transition: all 0.2s; }
+        .btn-pop-w { background: #ffffff; color: #000; border: 1px solid #ccc; } .btn-pop-y { background: #fdee5c; color: #000; } .btn-pop-b { background: #000000; color: #fff; } .btn-pop-c { background: var(--custom-cell-color); color: #fff; } .btn-pop-p { background: #38bdf8; color: #000; }
+        .pop-title { font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-top: 4px; border-top: 1px solid #334155; padding-top: 6px; text-align: center; }
+        .border-toggle { background: #334155; border: 2px solid #475569; color: #94a3b8; padding: 6px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: all 0.2s; flex: 1; text-align: center; }
+        .border-toggle.active { background: #dc2626; border-color: #dc2626; color: #fff; box-shadow: 0 0 8px rgba(220, 38, 38, 0.5); }
+        .arrows-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 4px; }
+        .arrow-option { width: 100%; aspect-ratio: 1; background: #1e293b; border: 2px solid #475569; border-radius: 6px; cursor: pointer; padding: 5px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .arrow-option:hover { border-color: #ee2a24; background: #2d1f1f; transform: scale(1.1); }
+        .arrow-option svg { width: 100%; height: 100%; }
+        .photo-controls { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 12px; display: none; flex-direction: column; gap: 8px; z-index: 6000; width: 95%; max-width: 400px; }
+        .photo-controls .ctrl-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+        .photo-controls button { background: #16a34a; border: none; color: white; padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; }
+        .photo-controls button.btn-del { background: #dc2626; }
+        .presets-panel { width: 100%; max-width: 1100px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); display: none; }
+        .presets-panel.visible { display: block; }
+        .presets-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; max-height: 200px; overflow-y: auto; }
+        .preset-item { display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; flex: 1; min-width: 200px; }
+        .preset-item span { flex: 1; font-size: 12px; font-weight: bold; color: #1e293b; }
+        .preset-item .preset-date { font-size: 10px; color: #64748b; font-weight: normal; }
+        .preset-item button { padding: 4px 8px; border: none; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-preset-load { background: #3b82f6; color: white; } .btn-preset-delete { background: #ef4444; color: white; }
+        .no-presets { text-align: center; color: #94a3b8; font-size: 12px; padding: 20px; width: 100%; }
+        .btn-save { background: #8b5cf6; } .btn-load { background: #f59e0b; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 8px; font-size: 12px; font-weight: bold; z-index: 10000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; } .toast.success { background: #22c55e; } .toast.error { background: #ef4444; } .toast.info { background: #3b82f6; }
+        .autosave-indicator { position: fixed; bottom: 20px; right: 20px; background: #22c55e; color: white; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: bold; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .autosave-indicator.show { opacity: 1; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: center; justify-content: center; }
+        .modal-overlay.visible { display: flex; }
+        .modal { background: white; border-radius: 12px; padding: 20px; max-width: 400px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .modal h3 { font-size: 14px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; color: #1e293b; }
+        .modal input { width: 100%; padding: 10px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: bold; margin-bottom: 12px; }
+        .modal .modal-actions { display: flex; gap: 8px; }
+        .modal .modal-actions button { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 11px; }
+        .btn-modal-save { background: #8b5cf6; color: white; } .btn-modal-cancel { background: #cbd5e1; color: #1e293b; }
+        .newspaper-footer { padding: 10px 20px; background: #fff; border-top: 3px solid #000; text-align: center; }
+        .newspaper-footer input { font-family: 'Roboto Condensed', sans-serif; font-size: 14px; font-weight: bold; color: #000; text-transform: uppercase; letter-spacing: 0.5px; border: none; background: transparent; width: 100%; text-align: center; outline: none; }
     </style>
 </head>
-<!-- Added overflow-x-hidden to prevent any horizontal scrolling -->
-<body class="bg-gradient-to-br from-rose-50 to-amber-100 min-h-screen flex items-center justify-center p-4 overflow-x-hidden">
-
-    <!-- Introduction Screen -->
-    <!-- It is centered and uses responsive text sizes for different screens -->
-    <div id="introContainer" class="text-center intro-animation w-full max-w-md mx-auto">
-        <h1 class="font-dancing-script text-4xl sm:text-5xl md:text-6xl text-rose-800">Una sorpresa para ti...</h1>
-        <p class="text-amber-700 mt-4 text-lg sm:text-xl">Mi amor</p>
-        <div class="my-10">
-            <svg class="w-16 h-16 sm:w-20 sm:h-20 heart-icon inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
+<body>
+    <div class="admin-panel">
+        <div class="section-title">Estructura de Cuadrados (Alto por Largo Independiente)</div>
+        <div class="panel-row">
+            <div class="panel-group"><label>Largo (Cols):</label><input type="number" id="input-cols" value="14" min="4" max="25" onchange="rebuildGrid()"></div>
+            <div class="panel-group"><label>Alto (Filas):</label><input type="number" id="input-rows" value="12" min="4" max="25" onchange="rebuildGrid()"></div>
+            <div class="panel-group"><label>Color Libre:</label><input type="color" id="picker-color" value="#a855f7" onchange="updateLiveColor(this.value)"></div>
+            <button class="toggle-paint-mode" id="btn-drag-mode" onclick="toggleDragPaintMode()">👆 Modo: Clic Único</button>
         </div>
-        <!-- The button has generous padding for easy tapping on mobile -->
-        <button id="openLetterButton" class="bg-rose-400 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-rose-500 transition-transform transform hover:scale-105 duration-300 text-lg">
-            Ábrela
-        </button>
+        <div class="section-title">Configuración de Letras</div>
+        <div class="panel-row">
+            <div class="panel-group">
+                <label>Fuente:</label>
+                <select id="font-selector" onchange="updateFont()">
+                    <option value="'Caveat', cursive" selected>Caveat (Cursiva)</option>
+                    <option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
+                    <option value="Georgia, serif">Georgia</option>
+                </select>
+            </div>
+            <div class="panel-group" style="margin-left: 15px;">
+                <input type="range" id="font-size-slider" min="0.35" max="1.5" step="0.05" value="0.35" oninput="updateFontSize()">
+                <span id="font-size-value">0.35</span>
+            </div>
+        </div>
+        <div class="section-title">Herramientas (Para hacer Clic / Desplazar Dedo)</div>
+        <div class="panel-row">
+            <div class="tool-selector">
+                <button class="tool-btn active" id="tool-white" onclick="selectTool('white')">⬜ Casilla</button>
+                <button class="tool-btn" id="tool-yellow" onclick="selectTool('yellow')">🟨 Amarillo</button>
+                <button class="tool-btn" id="tool-custom" onclick="selectTool('custom')">🎨 Color P.</button>
+                <button class="tool-btn" id="tool-black" onclick="selectTool('black')">⬛ Negro</button>
+                <button class="tool-btn" id="tool-arrow" onclick="selectTool('arrow')">🎯 Flecha Roja</button>
+                <button class="tool-btn" id="tool-clue" onclick="selectTool('clue')">📝 Cuadro Pista</button>
+            </div>
+        </div>
+        <div class="panel-row"><button class="tool-btn" style="background:#0f172a;color:white;" onclick="spawnManualImage()">🖼️ Insertar Foto Flotante Periodística</button></div>
+        <div class="actions-row">
+            <button class="btn-action btn-toggle" id="btn-toggle" onclick="toggleSolutions()">👁️ Ocultar Letras</button>
+            <button class="btn-action btn-toggle-clues" id="btn-toggle-clues" onclick="toggleClues()">👁️ Ocultar Pistas</button>
+            <button class="btn-action btn-save" onclick="showSavePresetModal()">💾 Guardar Preset</button>
+            <button class="btn-action btn-load" onclick="togglePresetsPanel()">📂 Cargar Preset</button>
+            <button class="btn-action btn-export" onclick="exportToPng()">📸 Guardar PNG</button>
+        </div>
     </div>
-
-    <!-- Main Letter Container (Initially hidden) -->
-    <!-- max-w-2xl and w-full make it responsive. It won't exceed a certain width on desktop but will fill the screen on mobile -->
-    <div id="letterCard" class="bg-white/90 backdrop-blur-sm shadow-2xl rounded-2xl max-w-2xl w-full p-6 sm:p-8 md:p-10 lg:p-12 mx-auto my-8 border-t-4 border-rose-300 hidden">
-        
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="font-dancing-script text-4xl sm:text-5xl text-rose-800">Mi Adorada Pamela</h1>
-            <p class="text-amber-700 mt-2 text-base sm:text-lg">Nuestro 07 de cada mes</p>
-        </header>
-
-        <!-- Body of the message with responsive text size -->
-        <main class="text-gray-700 text-base sm:text-lg leading-relaxed text-justify italic">
-            <p class="mb-6">Hoy el calendario me sonríe cómplice, marcando nuestro día, ese 07 que se ha vuelto el faro en mi calendario, el recordatorio luminoso de la fortuna que tengo al tenerte en mi vida. Un día como hoy, el universo conspiró a nuestro favor, y desde entonces, cada mes se siente como un nuevo capítulo en el libro más hermoso que jamás he leído: nuestra historia.</p>
-            <p class="mb-6">No quiero que este sea solo un saludo más. Quiero que estas palabras intenten, aunque sea de forma imperfecta, dibujar la inmensidad de lo que siento por ti. Eres esa melodía que no sabía que le faltaba a mi alma, la pieza exacta que encajó sin forzar, transformando mi mundo en un lugar más cálido, más brillante, más real.</p>
-            <p class="mb-6">Amo, con una intensidad que a veces me asusta, cada pequeño universo que habita en ti. Amo la forma en que tus ojos cuentan historias sin necesidad de palabras, la manera en que tu risa tiene el poder de desvanecer cualquier tormenta en mi mente. Amo tu actitud ante la vida, esa mezcla de fuerza y ternura que te hace tan única, tan tú. Pero más allá de todas esas cosas que adoro, amo el todo que eres. Eres un ser de luz, una persona maravillosa cuya bondad y esencia me inspiran a ser un mejor hombre cada día.</p>
-            <p class="mb-6">Contigo he aprendido que el amor no se trata de contar los días, sino de hacer que cada día cuente. Y a tu lado, cada amanecer es una promesa, cada anochecer una paz que solo tu presencia me da. Eres mi ancla y mi vela, mi puerto seguro y mi mar abierto. Eres la aventura que siempre soñé y el hogar al que siempre quiero volver.</p>
-            <p class="mb-6">Gracias por ser mi compañera de viaje, por tu paciencia en mis días grises y por ser la celebración en mis momentos de alegría. Gracias por cada confidencia, por cada sueño compartido y por construir a mi lado este amor tan nuestro, tan fuerte y tan lleno de vida.</p>
-            <p class="text-center font-semibold text-rose-700 mb-8 text-base sm:text-lg">En este día que es nuestro, quiero que sepas que mi amor por ti crece con cada latido de mi corazón. Eres y serás siempre lo más importante para mí.</p>
-        </main>
-
-        <!-- Footer / Signature -->
-        <footer class="text-right mt-8">
-            <p class="font-dancing-script text-3xl sm:text-4xl text-rose-800">Feliz día, mi amor.</p>
-            <p class="text-amber-800 text-lg sm:text-xl mt-2">Con todo mi amor y mi ser,</p>
-            <p class="font-dancing-script text-3xl sm:text-3xl text-amber-900 mt-1">Jason</p>
-        </footer>
+    <div class="presets-panel" id="presets-panel"><div class="section-title">Presets Guardados</div><div class="presets-list" id="presets-list"><div class="no-presets">No hay presets guardados aún</div></div></div>
+    <div class="workspace-scroll">
+        <div class="capture-canvas" id="capture-area">
+            <div class="newspaper-top">
+                <div class="main-title">J. DAFNIS<span>GRAMA</span></div>
+                <div class="meta-right"><input type="text" id="live-date" value="DOMINGO" placeholder="Fecha"></div>
+            </div>
+            <div class="grid-wrapper"><div class="grid-container" id="grid-main"></div></div>
+            <div class="newspaper-footer"><input type="text" id="footer-text" value="ESCUELA DE EDUCACIÓN SUPERIOR PEDAGÓGICA PÚBLICA JULIACA - MATEMÁTICAS" placeholder="Pie de página"></div>
+            <div class="context-menu-popover" id="cell-popover-menu">
+                <div class="pop-title">🎨 Color de Celda</div>
+                <div class="pop-row"><button class="btn-pop-w" onclick="triggerPopoverSelection('white')">Casilla</button><button class="btn-pop-y" onclick="triggerPopoverSelection('yellow')">Amar.</button><button class="btn-pop-c" onclick="triggerPopoverSelection('custom')">Color</button></div>
+                <div class="pop-row"><button class="btn-pop-b" onclick="triggerPopoverSelection('black')">Negro</button><button class="btn-pop-p" onclick="triggerPopoverSelection('clue')">Pista</button></div>
+                <div class="pop-title">🔴 Limitadores Rojos (Toggle)</div>
+                <div class="pop-row"><button class="border-toggle" data-border="br-top" onclick="toggleRedBorder('br-top')">⬆ Superior</button><button class="border-toggle" data-border="br-bottom" onclick="toggleRedBorder('br-bottom')">⬇ Inferior</button></div>
+                <div class="pop-row"><button class="border-toggle" data-border="br-left" onclick="toggleRedBorder('br-left')">⬅ Izquierdo</button><button class="border-toggle" data-border="br-right" onclick="toggleRedBorder('br-right')">➡ Derecho</button></div>
+                <div class="pop-title">🏹 Banco de Flechas con Cabeza</div><div class="arrows-grid" id="arrows-grid-popover"></div>
+                <div class="pop-title">💡 Pistas con Flechas</div>
+                <div class="pop-row"><button style="background:#475569" onclick="createLineClueHere('top','down')">⬆ Arr ↓</button><button style="background:#475569" onclick="createLineClueHere('top','up')">⬆ Arr ↑</button></div>
+                <div class="pop-row"><button style="background:#475569" onclick="createLineClueHere('right','left')">➡ Der ←</button><button style="background:#475569" onclick="createLineClueHere('right','right')">➡ Der →</button></div>
+                <div class="pop-row"><button style="background:#475569" onclick="createLineClueHere('bottom','up')">⬇ Abj ↑</button><button style="background:#475569" onclick="createLineClueHere('bottom','down')">⬇ Abj ↓</button></div>
+                <div class="pop-row"><button style="background:#475569" onclick="createLineClueHere('left','right')">⬅ Izq →</button><button style="background:#475569" onclick="createLineClueHere('left','left')">⬅ Izq ←</button></div>
+                <div class="pop-row" style="margin-top:4px;"><button style="background:#64748b" onclick="closePopover()">✕ Cerrar</button></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="save-preset-modal"><div class="modal"><h3>💾 Guardar Preset</h3><input type="text" id="preset-name-input" placeholder="Nombre del preset..." maxlength="50"><div class="modal-actions"><button class="btn-modal-save" onclick="savePreset()">Guardar</button><button class="btn-modal-cancel" onclick="hideSavePresetModal()">Cancelar</button></div></div></div>
+    <div class="autosave-indicator" id="autosave-indicator">✓ Guardado</div>
+    <div class="toast" id="toast"></div>
+    <div class="photo-controls" id="photo-controls-ui">
+        <div class="ctrl-row"><label>Forma Física:</label><select id="img-shape" onchange="refreshOverlayStyles()"><option value="shape-rect">Rectángulo Recto</option><option value="shape-rounded">Bordes Suaves</option><option value="shape-circle">Círculo / Óvalo</option></select></div>
+        <div class="ctrl-row"><label>Medidas (Ancho x Alto):</label><div><input type="number" id="img-w" value="3" min="1" oninput="refreshOverlayStyles()"> x <input type="number" id="img-h" value="4" min="1" oninput="refreshOverlayStyles()"></div></div>
+        <div class="ctrl-row"><button class="btn-del" onclick="deleteOverlay()">🗑️ Eliminar</button><button onclick="document.getElementById('photo-controls-ui').style.display='none'">Listo</button></div>
+        <input type="file" id="universal-file-loader" style="display:none;" accept="image/*" onchange="processFile(event)">
     </div>
 
     <script>
-        // --- Logic to display the letter ---
-        const openButton = document.getElementById('openLetterButton');
-        const introContainer = document.getElementById('introContainer');
-        const letterCard = document.getElementById('letterCard');
+        // === VARIABLES ===
+        let currentCols = 14; let currentRows = 12;
+        let activeTool = 'white'; let hideSolutionsActive = false;
+        let hideCluesActive = false;
+        let dragPaintMode = false; let isDrawing = false;
+        let activeOverlay = null; let targetCell = null;
+        let touchTimer = null; let longPressDetected = false;
+        let currentFont = "'Caveat', cursive";
+        let currentFontSize = 0.35;
 
-        openButton.addEventListener('click', () => {
-            // Apply fade-out animation to the introduction
-            introContainer.classList.add('fade-out');
+        // === BANCO DE FLECHAS ===
+        const arrowBank = [
+            { name: 'Recta →', svg: '<svg viewBox="0 0 24 24"><line x1="2" y1="12" x2="16" y2="12" stroke="#ee2a24" stroke-width="4" stroke-linecap="round"/><polygon points="16,6 24,12 16,18" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Recta ↓', svg: '<svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="16" stroke="#ee2a24" stroke-width="4" stroke-linecap="round"/><polygon points="6,16 12,24 18,16" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Recta ←', svg: '<svg viewBox="0 0 24 24"><line x1="22" y1="12" x2="8" y2="12" stroke="#ee2a24" stroke-width="4" stroke-linecap="round"/><polygon points="8,6 0,12 8,18" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Recta ↑', svg: '<svg viewBox="0 0 24 24"><line x1="12" y1="22" x2="12" y2="8" stroke="#ee2a24" stroke-width="4" stroke-linecap="round"/><polygon points="6,8 12,0 18,8" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Curva ↱', svg: '<svg viewBox="0 0 24 24"><path d="M4 20 L4 8 Q4 4 8 4 L16 4" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="16,1 22,4 16,7" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Curva ↳', svg: '<svg viewBox="0 0 24 24"><path d="M4 4 L4 16 Q4 20 8 20 L16 20" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="16,17 22,20 16,23" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Curva ↲', svg: '<svg viewBox="0 0 24 24"><path d="M20 4 L20 16 Q20 20 16 20 L8 20" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="8,23 2,20 8,17" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Curva ↰', svg: '<svg viewBox="0 0 24 24"><path d="M20 20 L20 8 Q20 4 16 4 L8 4" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="8,7 2,4 8,1" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Esq. ↖', svg: '<svg viewBox="0 0 24 24"><path d="M20 20 L8 20 L8 8" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="5,8 8,2 11,8" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Esq. ↗', svg: '<svg viewBox="0 0 24 24"><path d="M4 20 L16 20 L16 8" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="13,8 16,2 19,8" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Esq. ↙', svg: '<svg viewBox="0 0 24 24"><path d="M20 4 L8 4 L8 16" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="5,16 8,22 11,16" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' },
+            { name: 'Esq. ↘', svg: '<svg viewBox="0 0 24 24"><path d="M4 4 L16 4 L16 16" fill="none" stroke="#ee2a24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><polygon points="13,16 16,22 19,16" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5" stroke-linejoin="round"/></svg>' }
+        ];
+        const arrowHeadSVG = {
+            up: '<svg viewBox="0 0 20 20" width="14" height="14"><polygon points="10,2 18,14 2,14" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5"/></svg>',
+            down: '<svg viewBox="0 0 20 20" width="14" height="14"><polygon points="10,18 2,6 18,6" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5"/></svg>',
+            left: '<svg viewBox="0 0 20 20" width="14" height="14"><polygon points="2,10 14,2 14,18" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5"/></svg>',
+            right: '<svg viewBox="0 0 20 20" width="14" height="14"><polygon points="18,10 6,2 6,18" fill="#ee2a24" stroke="#cc1a1a" stroke-width="1.5"/></svg>'
+        };
 
-            // Wait for the fade-out animation to finish before showing the letter
-            introContainer.addEventListener('animationend', () => {
-                introContainer.classList.add('hidden'); // Hide the intro completely
-                letterCard.classList.remove('hidden'); // Show the letter
-                letterCard.classList.add('card-animation'); // Apply fade-in animation to the letter
-            }, { once: true }); // Ensure the event listener runs only once
-        });
+        const STORAGE_KEY = 'daphnisgrama_autosave';
+        const PRESETS_KEY = 'daphnisgrama_presets';
+        let autosaveTimeout = null;
+
+        function generateFileName() {
+            const n = new Date();
+            const pad = (x) => String(x).padStart(2, '0');
+            return `Crucigrama_${n.getFullYear()}${pad(n.getMonth()+1)}${pad(n.getDate())}.${pad(n.getHours())}${pad(n.getMinutes())}${pad(n.getSeconds())}(@ozzy.bichito)`;
+        }
+
+        function getGridState() {
+            const cells = [], container = document.getElementById('grid-main');
+            if (!container) return null;
+            container.querySelectorAll('.grid-cell').forEach(cell => {
+                const r = parseInt(cell.dataset.row), c = parseInt(cell.dataset.col);
+                if (isNaN(r) || isNaN(c)) return;
+                if (!cells[r]) cells[r] = [];
+                const inp = cell.querySelector('.input-letter'), ta = cell.querySelector('.clue-textarea');
+                cells[r][c] = {
+                    isBlack: cell.classList.contains('cell-black'), isYellow: cell.classList.contains('cell-yellow'),
+                    isCustom: cell.classList.contains('cell-custom'), isArrow: cell.classList.contains('cell-large-arrow'),
+                    isClue: cell.classList.contains('cell-clue'), arrowIdx: cell.dataset.arrowIdx || null,
+                    borders: { top: cell.classList.contains('br-top'), bottom: cell.classList.contains('br-bottom'), left: cell.classList.contains('br-left'), right: cell.classList.contains('br-right') },
+                    letter: inp ? inp.value : '', clueText: ta ? ta.value : ''
+                };
+            });
+            const lineClues = []; document.querySelectorAll('.line-clue-box').forEach(cl => { const ta = cl.querySelector('textarea'); lineClues.push({ parentRow: cl.dataset.parentRow, parentCol: cl.dataset.parentCol, pos: cl.dataset.pos, arrowDir: cl.dataset.arrowDir, text: ta ? ta.value : '' }); });
+            const images = []; document.querySelectorAll('.image-overlay-box').forEach(img => { images.push({ gx: img.dataset.gx, gy: img.dataset.gy, sw: img.dataset.sw, sh: img.dataset.sh, shape: img.dataset.shape, bgImage: img.style.backgroundImage || '', ready: img.classList.contains('ready') }); });
+            return {
+                cols: currentCols, rows: currentRows,
+                customColor: document.getElementById('picker-color').value,
+                hideSolutions: hideSolutionsActive,
+                hideClues: hideCluesActive,
+                cells, lineClues, images,
+                dateText: document.getElementById('live-date').value,
+                footerText: document.getElementById('footer-text').value,
+                letterFont: currentFont,
+                letterSize: currentFontSize
+            };
+        }
+
+        function saveStateToStorage() {
+            const state = getGridState();
+            if (state && state.cells && state.cells.length) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                const ind = document.getElementById('autosave-indicator');
+                ind.classList.add('show'); setTimeout(() => ind.classList.remove('show'), 1500);
+            }
+        }
+
+        function autosave() { clearTimeout(autosaveTimeout); autosaveTimeout = setTimeout(saveStateToStorage, 500); }
+        function showToast(msg, type) { const t = document.getElementById('toast'); t.textContent = msg; t.className = 'toast ' + type + ' show'; setTimeout(() => t.classList.remove('show'), 2500); }
+        function getPresets() { try { return JSON.parse(localStorage.getItem(PRESETS_KEY)) || []; } catch (e) { return []; } }
+        function savePresets(p) { localStorage.setItem(PRESETS_KEY, JSON.stringify(p)); }
+        function showSavePresetModal() { document.getElementById('save-preset-modal').classList.add('visible'); document.getElementById('preset-name-input').value = ''; document.getElementById('preset-name-input').focus(); }
+        function hideSavePresetModal() { document.getElementById('save-preset-modal').classList.remove('visible'); }
+        function savePreset() {
+            const n = document.getElementById('preset-name-input').value.trim();
+            if (!n) { showToast('Ingresa un nombre', 'error'); return; }
+            const presets = getPresets(), idx = presets.findIndex(p => p.name === n);
+            const preset = { name: n, date: new Date().toLocaleString('es-ES'), state: getGridState() };
+            if (idx >= 0) presets[idx] = preset; else presets.push(preset);
+            savePresets(presets); hideSavePresetModal(); showToast('Preset guardado: ' + n, 'success'); renderPresetsList();
+        }
+        function loadPreset(n) { const p = getPresets().find(x => x.name === n); if (p && p.state && restoreGridFromState(p.state)) { showToast('Preset cargado: ' + n, 'success'); autosave(); } }
+        function deletePreset(n) { if (!confirm('Eliminar ' + n + '?')) return; savePresets(getPresets().filter(x => x.name !== n)); renderPresetsList(); showToast('Preset eliminado', 'info'); }
+        function togglePresetsPanel() { const p = document.getElementById('presets-panel'); p.classList.toggle('visible'); if (p.classList.contains('visible')) renderPresetsList(); }
+        function renderPresetsList() {
+            const list = document.getElementById('presets-list'), presets = getPresets();
+            if (!presets.length) { list.innerHTML = '<div class="no-presets">No hay presets guardados aún</div>'; return; }
+            list.innerHTML = presets.map(p => `<div class="preset-item"><span>${p.name} <span class="preset-date">${p.date}</span></span><button class="btn-preset-load" onclick="loadPreset('${p.name}')">Cargar</button><button class="btn-preset-delete" onclick="deletePreset('${p.name}')">✕</button></div>`).join('');
+        }
+
+        function restoreGridFromState(state) {
+            if (!state || !state.cells || !state.cells.length) return false;
+            currentCols = state.cols || 14; currentRows = state.rows || 12;
+            document.getElementById('input-cols').value = currentCols; document.getElementById('input-rows').value = currentRows;
+            document.documentElement.style.setProperty('--grid-cols', currentCols); document.documentElement.style.setProperty('--grid-rows', currentRows);
+            if (state.customColor) { document.getElementById('picker-color').value = state.customColor; document.documentElement.style.setProperty('--custom-cell-color', state.customColor); }
+            if (state.dateText) document.getElementById('live-date').value = state.dateText;
+            if (state.footerText) document.getElementById('footer-text').value = state.footerText;
+            if (state.letterFont) { currentFont = state.letterFont; document.documentElement.style.setProperty('--letter-font', currentFont); document.getElementById('font-selector').value = currentFont; }
+            if (state.letterSize) { currentFontSize = state.letterSize; document.documentElement.style.setProperty('--letter-size-multiplier', currentFontSize); document.getElementById('font-size-slider').value = currentFontSize; document.getElementById('font-size-value').textContent = currentFontSize; }
+            const container = document.getElementById('grid-main'); container.innerHTML = '';
+            document.querySelectorAll('.line-clue-box, .image-overlay-box').forEach(e => e.remove());
+            for (let r = 0; r < currentRows; r++) {
+                for (let c = 0; c < currentCols; c++) {
+                    const cell = document.createElement('div'); cell.classList.add('grid-cell'); cell.dataset.row = r; cell.dataset.col = c;
+                    const d = (state.cells[r] && state.cells[r][c]) ? state.cells[r][c] : null;
+                    if (d) {
+                        if (d.borders) { if (d.borders.top) cell.classList.add('br-top'); if (d.borders.bottom) cell.classList.add('br-bottom'); if (d.borders.left) cell.classList.add('br-left'); if (d.borders.right) cell.classList.add('br-right'); }
+                        if (d.isBlack) { cell.className = 'grid-cell cell-black'; if (d.borders.top) cell.classList.add('br-top'); if (d.borders.bottom) cell.classList.add('br-bottom'); if (d.borders.left) cell.classList.add('br-left'); if (d.borders.right) cell.classList.add('br-right'); }
+                        else if (d.isArrow && d.arrowIdx !== null) { cell.className = 'grid-cell cell-large-arrow'; cell.dataset.arrowIdx = d.arrowIdx; cell.innerHTML = arrowBank[parseInt(d.arrowIdx)]?.svg || ''; cell.ondblclick = function(e) { e.stopPropagation(); let i = parseInt(cell.dataset.arrowIdx || 0); i = (i + 1) % arrowBank.length; transformToArrow(cell, i); }; }
+                        else if (d.isClue) { cell.className = 'grid-cell cell-clue'; const ta = document.createElement('textarea'); ta.classList.add('clue-textarea'); ta.value = d.clueText || 'PISTA\nAQUI'; cell.appendChild(ta); }
+                        else { let v = 'white'; if (d.isYellow) v = 'yellow'; if (d.isCustom) v = 'custom'; transformToLetter(cell, v, d.letter || ''); }
+                    } else { transformToLetter(cell, 'white'); }
+                    bindCellEvents(cell); container.appendChild(cell);
+                }
+            }
+            if (state.lineClues) { state.lineClues.forEach(cd => { /* same clue creation */ }); }
+            if (state.images) { state.images.forEach(id => { /* same image creation */ }); }
+            if (state.hideSolutions) { hideSolutionsActive = true; document.getElementById('capture-area').classList.add('hide-solutions-mode'); const btn = document.getElementById('btn-toggle'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; }
+            else { hideSolutionsActive = false; document.getElementById('capture-area').classList.remove('hide-solutions-mode'); const btn = document.getElementById('btn-toggle'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; }
+            if (state.hideClues) { hideCluesActive = true; document.getElementById('capture-area').classList.add('hide-clues-mode'); const btn = document.getElementById('btn-toggle-clues'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; }
+            else { hideCluesActive = false; document.getElementById('capture-area').classList.remove('hide-clues-mode'); const btn = document.getElementById('btn-toggle-clues'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; }
+            return true;
+        }
+
+        window.onload = function() {
+            const dateInput = document.getElementById('live-date');
+            dateInput.value = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
+            dateInput.addEventListener('input', autosave);
+            document.getElementById('footer-text').addEventListener('input', autosave);
+            document.documentElement.style.setProperty('--letter-font', currentFont);
+            document.documentElement.style.setProperty('--letter-size-multiplier', currentFontSize);
+            document.getElementById('font-size-value').textContent = currentFontSize;
+            const saved = localStorage.getItem(STORAGE_KEY);
+            let loaded = false;
+            if (saved) { try { const s = JSON.parse(saved); if (s && s.cells && s.cells.length && s.cols && s.rows) loaded = restoreGridFromState(s); else localStorage.removeItem(STORAGE_KEY); } catch (e) { localStorage.removeItem(STORAGE_KEY); } }
+            if (!loaded) rebuildGrid();
+            buildArrowsGrid();
+            document.addEventListener('click', (e) => { const po = document.getElementById('cell-popover-menu'); if (!po.contains(e.target) && e.target !== targetCell) po.style.display = 'none'; });
+            document.addEventListener('mouseup', () => { isDrawing = false; });
+            document.addEventListener('touchend', () => { isDrawing = false; });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { hideSavePresetModal(); closePopover(); } });
+            window.addEventListener('beforeunload', saveStateToStorage);
+        };
+
+        function buildArrowsGrid() { const c = document.getElementById('arrows-grid-popover'); c.innerHTML = ''; arrowBank.forEach((a, i) => { const b = document.createElement('div'); b.className = 'arrow-option'; b.innerHTML = a.svg; b.title = a.name; b.addEventListener('click', (e) => { e.stopPropagation(); insertSpecificArrow(i); }); c.appendChild(b); }); }
+
+        function rebuildGrid() {
+            currentCols = parseInt(document.getElementById('input-cols').value) || 14;
+            currentRows = parseInt(document.getElementById('input-rows').value) || 12;
+            document.documentElement.style.setProperty('--grid-cols', currentCols);
+            document.documentElement.style.setProperty('--grid-rows', currentRows);
+            const container = document.getElementById('grid-main');
+            container.innerHTML = '';
+            document.querySelectorAll('.line-clue-box').forEach(e => e.remove());
+            for (let r = 0; r < currentRows; r++) {
+                for (let c = 0; c < currentCols; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('grid-cell');
+                    cell.dataset.row = r; cell.dataset.col = c;
+                    bindCellEvents(cell);
+                    transformToLetter(cell, 'white');
+                    container.appendChild(cell);
+                }
+            }
+            repositionAllOverlays();
+        }
+
+        function bindCellEvents(cell) {
+            cell.addEventListener('mousedown', (e) => { if (e.button !== 0) return; longPressDetected = false; touchTimer = setTimeout(() => { longPressDetected = true; openPopover(e, cell); }, 450); if (dragPaintMode) { isDrawing = true; executePaintAction(cell); } });
+            cell.addEventListener('mouseenter', () => { if (dragPaintMode && isDrawing) { executePaintAction(cell); } });
+            cell.addEventListener('mouseup', (e) => { clearTimeout(touchTimer); if (!longPressDetected && !dragPaintMode) { if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') { executePaintAction(cell); } } });
+            cell.addEventListener('touchstart', (e) => { longPressDetected = false; touchTimer = setTimeout(() => { longPressDetected = true; openPopover(e.touches[0], cell); }, 500); if (dragPaintMode) { isDrawing = true; executePaintAction(cell); } }, { passive: true });
+            cell.addEventListener('touchmove', (e) => { clearTimeout(touchTimer); if (dragPaintMode && isDrawing) { const el = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY); const m = el ? el.closest('.grid-cell') : null; if (m) executePaintAction(m); } }, { passive: true });
+            cell.addEventListener('touchend', () => { clearTimeout(touchTimer); });
+        }
+
+        function executePaintAction(cell) { if (activeTool === 'arrow') transformToArrow(cell, 0); else if (activeTool === 'clue') transformToClue(cell); else if (activeTool === 'black') { cell.innerHTML = ''; cell.className = 'grid-cell cell-black'; } else transformToLetter(cell, activeTool); autosave(); }
+
+        function transformToLetter(cell, variant, val = "") {
+            cell.innerHTML = ''; cell.className = 'grid-cell';
+            if (variant === 'yellow') cell.classList.add('cell-yellow');
+            if (variant === 'custom') cell.classList.add('cell-custom');
+            const input = document.createElement('input');
+            input.type = 'text'; input.classList.add('input-letter'); input.maxLength = 1; input.value = val;
+            input.addEventListener('input', function() {
+                let filtered = this.value.toUpperCase().replace(/[^A-ZÑ]/g, '');
+                this.value = filtered.slice(0, 1);
+                if (this.value.length === 1) {
+                    const next = document.querySelector(`[data-row="${cell.dataset.row}"][data-col="${parseInt(cell.dataset.col) + 1}"] .input-letter`);
+                    if (next) { next.focus(); next.select(); }
+                }
+                autosave();
+            });
+            input.addEventListener('blur', autosave);
+            cell.appendChild(input);
+        }
+        function transformToArrow(cell, index = 0) { cell.innerHTML = ''; cell.className = 'grid-cell cell-large-arrow'; cell.dataset.arrowIdx = index; cell.innerHTML = arrowBank[index].svg; cell.ondblclick = function(e) { e.stopPropagation(); let i = parseInt(cell.dataset.arrowIdx || 0); i = (i + 1) % arrowBank.length; transformToArrow(cell, i); }; }
+        function transformToClue(cell, text = "PISTA\nAQUI") { cell.innerHTML = ''; cell.className = 'grid-cell cell-clue'; const area = document.createElement('textarea'); area.classList.add('clue-textarea'); area.value = text; cell.appendChild(area); }
+        function insertSpecificArrow(index) { if (!targetCell) return; transformToArrow(targetCell, index); document.getElementById('cell-popover-menu').style.display = 'none'; autosave(); }
+        function toggleRedBorder(borderClass) { if (!targetCell) return; targetCell.classList.toggle(borderClass); updateBorderToggleButtons(); autosave(); }
+        function updateBorderToggleButtons() { if (!targetCell) return; document.querySelectorAll('.border-toggle').forEach(btn => { btn.classList.toggle('active', targetCell.classList.contains(btn.dataset.border)); }); }
+
+        function createLineClueHere(position, arrowDirection) {
+            if (!targetCell) return;
+            const r = parseInt(targetCell.dataset.row), c = parseInt(targetCell.dataset.col);
+            document.querySelectorAll('.line-clue-box').forEach(cl => {
+                if (cl.dataset.parentRow === String(r) && cl.dataset.parentCol === String(c) && cl.dataset.pos === position) cl.remove();
+            });
+            const clue = document.createElement('div');
+            clue.classList.add('line-clue-box');
+            if (position === 'top' || position === 'bottom') clue.classList.add('horizontal');
+            else clue.classList.add('vertical');
+            clue.dataset.parentRow = r; clue.dataset.parentCol = c; clue.dataset.pos = position; clue.dataset.arrowDir = arrowDirection;
+            const txt = document.createElement('textarea');
+            txt.placeholder = "PISTA";
+            txt.value = "PISTA";
+            clue.appendChild(txt);
+            const ai = document.createElement('div'); ai.className = 'arrow-indicator'; ai.innerHTML = arrowHeadSVG[arrowDirection] || ''; clue.appendChild(ai);
+            clue.ondblclick = function(e) {
+                e.stopPropagation();
+                const dirs = ['up', 'down', 'left', 'right'];
+                clue.dataset.arrowDir = dirs[(dirs.indexOf(clue.dataset.arrowDir) + 1) % dirs.length];
+                const ind = clue.querySelector('.arrow-indicator');
+                if (ind && arrowHeadSVG[clue.dataset.arrowDir]) ind.innerHTML = arrowHeadSVG[clue.dataset.arrowDir];
+                repositionLineClue(clue);
+            };
+            document.getElementById('grid-main').appendChild(clue);
+            repositionLineClue(clue);
+            document.getElementById('cell-popover-menu').style.display = 'none';
+            autosave();
+        }
+
+        function repositionLineClue(clue) {
+            const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+            const pRow = parseInt(clue.dataset.parentRow); const pCol = parseInt(clue.dataset.parentCol);
+            const pos = clue.dataset.pos; const arrowDir = clue.dataset.arrowDir || 'right';
+            const baseLeft = pCol * (cellSize + 1); const baseTop = pRow * (cellSize + 1);
+            const thickness = Math.round(cellSize * 0.48);
+            const length = cellSize * 0.96;
+
+            if (pos === 'top') {
+                clue.style.width = length + 'px'; clue.style.height = thickness + 'px';
+                clue.style.left = baseLeft + 'px'; clue.style.top = (baseTop - thickness/2) + 'px';
+            } else if (pos === 'bottom') {
+                clue.style.width = length + 'px'; clue.style.height = thickness + 'px';
+                clue.style.left = baseLeft + 'px'; clue.style.top = (baseTop + cellSize - thickness/2) + 'px';
+            } else if (pos === 'left') {
+                clue.style.width = thickness + 'px'; clue.style.height = length + 'px';
+                clue.style.left = (baseLeft - thickness/2) + 'px'; clue.style.top = baseTop + 'px';
+            } else if (pos === 'right') {
+                clue.style.width = thickness + 'px'; clue.style.height = length + 'px';
+                clue.style.left = (baseLeft + cellSize - thickness/2) + 'px'; clue.style.top = baseTop + 'px';
+            }
+
+            const arrowIndicator = clue.querySelector('.arrow-indicator');
+            if (arrowIndicator) {
+                arrowIndicator.style.position = 'absolute'; const arrowSize = 14;
+                switch (arrowDir) {
+                    case 'up': arrowIndicator.style.bottom = '-14px'; arrowIndicator.style.left = '50%'; arrowIndicator.style.transform = 'translateX(-50%)'; break;
+                    case 'down': arrowIndicator.style.top = '-14px'; arrowIndicator.style.left = '50%'; arrowIndicator.style.transform = 'translateX(-50%)'; break;
+                    case 'left': arrowIndicator.style.right = '-14px'; arrowIndicator.style.top = '50%'; arrowIndicator.style.transform = 'translateY(-50%)'; break;
+                    case 'right': arrowIndicator.style.left = '-14px'; arrowIndicator.style.top = '50%'; arrowIndicator.style.transform = 'translateY(-50%)'; break;
+                }
+                arrowIndicator.style.width = arrowSize + 'px'; arrowIndicator.style.height = arrowSize + 'px';
+                arrowIndicator.innerHTML = arrowHeadSVG[arrowDir] || '';
+            }
+        }
+
+        function openPopover(e, cell) { targetCell = cell; const popover = document.getElementById('cell-popover-menu'); popover.style.display = 'flex'; const containerRect = document.getElementById('capture-area').getBoundingClientRect(); let left = e.clientX - containerRect.left; let top = e.clientY - containerRect.top + 8; if (left + 300 > containerRect.width) left -= 300; if (top + 500 > containerRect.height) top -= 500; popover.style.left = left + 'px'; popover.style.top = top + 'px'; updateBorderToggleButtons(); }
+        function closePopover() { document.getElementById('cell-popover-menu').style.display = 'none'; }
+        function triggerPopoverSelection(mode) { if (targetCell) executeCellTransformation(targetCell, mode); document.getElementById('cell-popover-menu').style.display = 'none'; }
+        function executeCellTransformation(cell, mode) { activeTool = mode; executePaintAction(cell); }
+        function updateLiveColor(hex) { document.documentElement.style.setProperty('--custom-cell-color', hex); autosave(); }
+        function selectTool(tool) { activeTool = tool; document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active')); const toolBtn = document.getElementById('tool-' + tool); if (toolBtn) toolBtn.classList.add('active'); }
+        function toggleDragPaintMode() { dragPaintMode = !dragPaintMode; const btn = document.getElementById('btn-drag-mode'); if (dragPaintMode) { btn.classList.add('active-drag'); btn.innerText = '🎨 Modo: Desplazar para Pintar'; } else { btn.classList.remove('active-drag'); btn.innerText = '👆 Modo: Clic Único'; } }
+        function spawnManualImage() { const container = document.getElementById('grid-main'); const box = document.createElement('div'); box.classList.add('image-overlay-box', 'shape-rect'); box.dataset.gx = 2; box.dataset.gy = 2; box.dataset.sw = 3; box.dataset.sh = 4; box.dataset.shape = 'shape-rect'; box.onclick = function(e) { e.stopPropagation(); activeOverlay = box; document.getElementById('photo-controls-ui').style.display = 'flex'; document.getElementById('universal-file-loader').click(); }; setupDrag(box); container.appendChild(box); refreshOverlayPosition(box); }
+        function processFile(event) { const file = event.target.files[0]; if (file && activeOverlay) { const r = new FileReader(); r.onload = function(e) { activeOverlay.style.backgroundImage = `url('${e.target.result}')`; activeOverlay.classList.add('ready'); }; r.readAsDataURL(file); } }
+        function refreshOverlayStyles() { if (!activeOverlay) return; const s = document.getElementById('img-shape').value; activeOverlay.className = 'image-overlay-box ' + s; if (activeOverlay.classList.contains('ready')) activeOverlay.classList.add('ready'); activeOverlay.dataset.shape = s; activeOverlay.dataset.sw = document.getElementById('img-w').value; activeOverlay.dataset.sh = document.getElementById('img-h').value; refreshOverlayPosition(activeOverlay); }
+        function refreshOverlayPosition(el) { const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')); let gx = parseInt(el.dataset.gx); let gy = parseInt(el.dataset.gy); let sw = parseInt(el.dataset.sw); let sh = parseInt(el.dataset.sh); el.style.width = (sw * cellSize + (sw - 1)) + 'px'; el.style.height = (sh * cellSize + (sh - 1)) + 'px'; el.style.left = (gx * (cellSize + 1)) + 'px'; el.style.top = (gy * (cellSize + 1)) + 'px'; }
+        function repositionAllOverlays() { document.querySelectorAll('.image-overlay-box').forEach(b => refreshOverlayPosition(b)); document.querySelectorAll('.line-clue-box').forEach(b => repositionLineClue(b)); }
+        function deleteOverlay() { if (activeOverlay) { activeOverlay.remove(); activeOverlay = null; document.getElementById('photo-controls-ui').style.display = 'none'; } }
+        function setupDrag(el) { let mouseX = 0, mouseY = 0; el.addEventListener('mousedown', dragStart); el.addEventListener('touchstart', dragStart, { passive: false }); function dragStart(e) { if (e.type === 'touchstart') { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; } else { e.preventDefault(); mouseX = e.clientX; mouseY = e.clientY; } document.addEventListener('mousemove', dragMove); document.addEventListener('touchmove', dragMove, { passive: false }); document.addEventListener('mouseup', dragEnd); document.addEventListener('touchend', dragEnd); } function dragMove(e) { let clientX, clientY; if (e.type === 'touchmove') { clientX = e.touches[0].clientX; clientY = e.touches[0].clientY; } else { clientX = e.clientX; clientY = e.clientY; } let dx = clientX - mouseX; let dy = clientY - mouseY; let currentLeft = parseInt(el.style.left) || 0; let currentTop = parseInt(el.style.top) || 0; el.style.left = (currentLeft + dx) + 'px'; el.style.top = (currentTop + dy) + 'px'; mouseX = clientX; mouseY = clientY; } function dragEnd() { document.removeEventListener('mousemove', dragMove); document.removeEventListener('touchmove', dragMove); document.removeEventListener('mouseup', dragEnd); document.removeEventListener('touchend', dragEnd); const cellSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')); let currentLeft = parseInt(el.style.left); let currentTop = parseInt(el.style.top); let gx = Math.round(currentLeft / (cellSize + 1)); let gy = Math.round(currentTop / (cellSize + 1)); if (gx < 0) gx = 0; if (gy < 0) gy = 0; if (gx + parseInt(el.dataset.sw) > currentCols) gx = currentCols - parseInt(el.dataset.sw); if (gy + parseInt(el.dataset.sh) > currentRows) gy = currentRows - parseInt(el.dataset.sh); el.dataset.gx = gx; el.dataset.gy = gy; refreshOverlayPosition(el); } }
+        function toggleSolutions() { hideSolutionsActive = !hideSolutionsActive; const btn = document.getElementById('btn-toggle'); const captureArea = document.getElementById('capture-area'); if (hideSolutionsActive) { captureArea.classList.add('hide-solutions-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; } else { captureArea.classList.remove('hide-solutions-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; } }
+        function toggleClues() { hideCluesActive = !hideCluesActive; const btn = document.getElementById('btn-toggle-clues'); const captureArea = document.getElementById('capture-area'); if (hideCluesActive) { captureArea.classList.add('hide-clues-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; } else { captureArea.classList.remove('hide-clues-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; } autosave(); }
+        function exportToPng() { document.getElementById('cell-popover-menu').style.display = 'none'; const fn = generateFileName(); html2canvas(document.getElementById('capture-area'), { scale: 2, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => { const link = document.createElement('a'); link.download = fn + '.png'; link.href = canvas.toDataURL('image/png'); link.click(); }); }
+
+        function updateFont() {
+            currentFont = document.getElementById('font-selector').value;
+            document.documentElement.style.setProperty('--letter-font', currentFont);
+            autosave();
+        }
+
+        function updateFontSize() {
+            currentFontSize = parseFloat(document.getElementById('font-size-slider').value);
+            document.documentElement.style.setProperty('--letter-size-multiplier', currentFontSize);
+            document.getElementById('font-size-value').textContent = currentFontSize.toFixed(2);
+            autosave();
+        }
     </script>
 </body>
 </html>
