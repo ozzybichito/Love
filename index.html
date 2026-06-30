@@ -192,7 +192,7 @@
             <button class="btn-action btn-toggle-clues" id="btn-toggle-clues" onclick="toggleClues()">👁️ Ocultar Pistas</button>
             <button class="btn-action btn-save" onclick="showSavePresetModal()">💾 Guardar Preset</button>
             <button class="btn-action btn-load" onclick="togglePresetsPanel()">📂 Cargar Preset</button>
-            <button class="btn-action btn-download" onclick="captureAndShow()">📸 Generar imagen</button>
+            <button class="btn-action btn-download" onclick="downloadPNG()">📸 Descargar PNG</button>
             <button class="btn-action btn-print" onclick="window.print()">🖨️ Imprimir / PDF</button>
         </div>
     </div>
@@ -548,8 +548,8 @@
         function toggleSolutions() { hideSolutionsActive = !hideSolutionsActive; const btn = document.getElementById('btn-toggle'); const captureArea = document.getElementById('capture-area'); if (hideSolutionsActive) { captureArea.classList.add('hide-solutions-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Letras'; } else { captureArea.classList.remove('hide-solutions-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Letras'; } }
         function toggleClues() { hideCluesActive = !hideCluesActive; const btn = document.getElementById('btn-toggle-clues'); const captureArea = document.getElementById('capture-area'); if (hideCluesActive) { captureArea.classList.add('hide-clues-mode'); btn.classList.add('active-hide'); btn.innerText = '👁️ Mostrar Pistas'; } else { captureArea.classList.remove('hide-clues-mode'); btn.classList.remove('active-hide'); btn.innerText = '👁️ Ocultar Pistas'; } autosave(); }
 
-        // === NUEVA FUNCIÓN: CAPTURAR Y MOSTRAR PREVIEW ===
-        function captureAndShow() {
+        // === DESCARGA MEJORADA: intenta descargar directamente, si falla abre en ventana nueva ===
+        function downloadPNG() {
             document.getElementById('cell-popover-menu').style.display = 'none';
             const footer = document.getElementById('footer-section');
             if (footer) footer.style.display = 'none';
@@ -565,14 +565,41 @@
             }).then(canvas => {
                 if (footer) footer.style.display = '';
 
-                const dataUrl = canvas.toDataURL('image/png');
-                const previewImg = document.getElementById('preview-image');
-                previewImg.src = dataUrl;
-                document.getElementById('image-preview-modal').classList.add('visible');
-
-                // Configurar botón compartir
-                document.getElementById('share-image-btn').onclick = () => shareImage(dataUrl);
-                showToast('✅ Imagen lista. Toca "Compartir" o mantén pulsada la imagen.', 'success');
+                const fileName = generateFileName() + '.png';
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        showToast('Error al crear la imagen.', 'error');
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    // Comprobar si la descarga comenzó (en WebView puede fallar sin aviso)
+                    setTimeout(() => {
+                        // Si no se ha cerrado la URL, asumimos que no se descargó y abrimos en ventana nueva
+                        if (url) {
+                            URL.revokeObjectURL(url);
+                            // Abrir la imagen en nueva ventana como fallback
+                            const newWindow = window.open('', '_blank');
+                            if (newWindow) {
+                                newWindow.document.write(`<img src="${canvas.toDataURL('image/png')}" style="max-width:100%; height:auto;" />`);
+                                newWindow.document.title = fileName;
+                                showToast('✅ Imagen abierta. Mantén pulsada para guardar.', 'success');
+                            } else {
+                                // Si no se puede abrir ventana, mostrar modal de vista previa
+                                document.getElementById('preview-image').src = canvas.toDataURL('image/png');
+                                document.getElementById('image-preview-modal').classList.add('visible');
+                                document.getElementById('share-image-btn').onclick = () => shareImage(canvas.toDataURL('image/png'));
+                                showToast('✅ Imagen lista. Usa "Compartir" o mantén pulsada.', 'success');
+                            }
+                        }
+                    }, 1000);
+                }, 'image/png');
             }).catch(err => {
                 if (footer) footer.style.display = '';
                 console.error('Error al generar PNG:', err);
